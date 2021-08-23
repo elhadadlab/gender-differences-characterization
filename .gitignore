@@ -1,3 +1,4 @@
-output/created_files/*
-output/graphs/*
-output/summaries/*
+output/created_files/*.csv
+output/created_files/*.pickle
+output/graphs/*.html
+output/summaries/ohdsi_cumc_2021q1r2/*.csv
