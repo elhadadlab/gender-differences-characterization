@@ -1,0 +1,189 @@
+# Make sure to install all dependencies (not needed if already done):
+install.packages("SqlRender")
+install.packages("DatabaseConnector")
+install.packages("ggplot2")
+install.packages("ParallelLogger")
+install.packages("readr")
+install.packages("tibble")
+install.packages("dplyr")
+install.packages("RJSONIO")
+install.packages("devtools")
+install.packages("rlang")
+devtools::install_github("FeatureExtraction")
+devtools::install_github("ROhdsiWebApi")
+devtools::install_github("CohortDiagnostics")
+
+# closeAllConnections()
+# rm(list=ls())
+
+# Load the package
+library(characterizationPaperPackage)
+
+path <- 'c:/Users/tonys/Research/characterizationPaperPackage/'
+
+# Optional: specify where the temporary files will be created:
+options(andromedaTempFolder = file.path(path, "andromedaTemp"))
+
+# Maximum number of cores to be used:
+maxCores <- parallel::detectCores()
+
+# Details for connecting to the server:
+connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server",
+                                                                server = "10.115.115.119",
+                                                                user = "tonysun",
+                                                                password = "Fairness!123",
+                                                                )
+
+# For Oracle: define a schema that can be used to emulate temp tables:
+oracleTempSchema <- NULL
+
+# Start connection
+conn <- DatabaseConnector::connect(connectionDetails)
+# disconnect(conn)
+
+# Instantiate cohorts:
+pathToCsv <- system.file("settings", "CohortsToCreateFinal.csv", package = "characterizationPaperPackage")
+cohortsToCreate <- readr::read_csv(pathToCsv, col_types = readr::cols())
+
+# Params [move up]
+cdmDatabaseSchema <- "ohdsi_cumc_2021q1r2.dbo"
+cohortDatabaseSchema <- "ohdsi_cumc_2021q1r2.results"
+vocabularyDatabaseSchema <- cdmDatabaseSchema
+cohortTable <- "cohort_characterization"
+
+DatabaseConnector::executeSql(
+  connection = conn,
+  sql = "drop table ohdsi_cumc_2021q1r2.results.cohort_characterization",
+  profile = FALSE,
+  progressBar = TRUE,
+  reportOverallTime = TRUE,
+  errorReportFile = file.path(getwd(), "errorReportSql.txt"),
+  runAsBatch = FALSE
+)
+
+sql <- "CREATE TABLE ohdsi_cumc_2021q1r2.results.cohort_characterization (
+    cohort_definition_id int,
+    subject_id int,
+    cohort_start_date date,
+    cohort_end_date date
+);"
+
+DatabaseConnector::executeSql(
+  connection = conn,
+  sql = sql,
+  profile = FALSE,
+  progressBar = TRUE,
+  reportOverallTime = TRUE,
+  errorReportFile = file.path(getwd(), "errorReportSql.txt"),
+  runAsBatch = FALSE
+)
+
+for (i in 1:nrow(cohortsToCreate)) {
+  # if (cohortsToCreate$name[i] > 2677) {
+  writeLines(paste("Creating cohort:", cohortsToCreate$name[i]))
+  sql <- SqlRender::loadRenderTranslateSql(sqlFilename = paste0(cohortsToCreate$name[i], ".sql"),
+                                           packageName = "characterizationPaperPackage",
+                                           dbms = attr(conn, "dbms"),
+                                           oracleTempSchema = oracleTempSchema,
+                                           cdm_database_schema = cdmDatabaseSchema,
+                                           vocabulary_database_schema = vocabularyDatabaseSchema,
+                                           
+                                           # results_database_schema.cohort_inclusion = "#cohort_inclusion",  
+                                           # results_database_schema.cohort_inclusion_result = "#cohort_inc_result",  
+                                           # results_database_schema.cohort_inclusion_stats = "#cohort_inc_stats",  
+                                           # results_database_schema.cohort_summary_stats = "#cohort_summary_stats",  
+                                           
+                                           target_database_schema = cohortDatabaseSchema,
+                                           target_cohort_table = cohortTable,
+                                           target_cohort_id = cohortsToCreate$cohortId[i])
+  DatabaseConnector::executeSql(conn, sql) #}
+}
+
+# Run processing sexdiff_cohort_reference_ver5.sql script
+sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "sexdiff_cohort_reference_ver5.sql",
+                                         packageName = "characterizationPaperPackage",
+                                         dbms = attr(conn, "dbms"))
+
+DatabaseConnector::executeSql(conn, sql)
+
+
+abc <- DatabaseConnector::querySql(conn, "select * from ohdsi_cumc_2021q1r2.results.pbr_sexdiff_cohort_covarate_summary_v5 where cohort_definition_id = 11113")
+
+# abc <- DatabaseConnector::querySql(conn, "select * from ohdsi_cumc_2021q1r2.results.cohort_characterization where cohort_definition_id = 11113")
+
+
+DatabaseConnector::executeSql(
+  connection = conn,
+  sql = "drop table ohdsi_cumc_2021q1r2.results.tony_tmp",
+  profile = FALSE,
+  progressBar = TRUE,
+  reportOverallTime = TRUE,
+  errorReportFile = file.path(getwd(), "errorReportSql.txt"),
+  runAsBatch = FALSE
+)
+
+DatabaseConnector::executeSql(
+  connection = conn,
+  sql = "select top(50) person_id into ohdsi_cumc_2021q1r2.results.tony_tmp from ohdsi_cumc_2021q1r2.dbo.person",
+  profile = FALSE,
+  progressBar = TRUE,
+  reportOverallTime = TRUE,
+  errorReportFile = file.path(getwd(), "errorReportSql.txt"),
+  runAsBatch = FALSE
+)
+
+
+# Details specific to the database:
+outputFolder <- "c:/Users/tonys/Documents/Research/examplePackage/output"
+cdmDatabaseSchema <- "ohdsi_cumc_2021q1r2.dbo"
+cohortDatabaseSchema <- "ohdsi_cumc_2021q1r2.results"
+cohortTable <- "tony_CUMC_results"
+databaseId <- "CUMC"
+databaseName <- "tony_CUMC_results"
+databaseDescription <- "description" 
+# cohortTable <- "tony_CUMC_results_pheWG"
+# databaseId <- "CUMC"
+# databaseName <- "tony_CUMC_results_pheWG"
+# databaseDescription <- "description" 
+
+# Use this to run the cohorttDiagnostics. The results will be stored in the diagnosticsExport subfolder of the outputFolder. This can be shared between sites.
+examplePackage::runCohortDiagnostics(connectionDetails = connectionDetails,
+                                     cdmDatabaseSchema = cdmDatabaseSchema,
+                                     cohortDatabaseSchema = cohortDatabaseSchema,
+                                     cohortTable = cohortTable,
+                                     oracleTempSchema = oracleTempSchema,
+                                     outputFolder = outputFolder,
+                                     databaseId = databaseId,
+                                     databaseName = databaseName,
+                                     databaseDescription = databaseDescription,
+                                     createCohorts = TRUE,
+                                     runInclusionStatistics = FALSE,
+                                     runIncludedSourceConcepts = FALSE,
+                                     runOrphanConcepts = FALSE,
+                                     runTimeDistributions = FALSE,
+                                     runBreakdownIndexEvents = FALSE,
+                                     runIncidenceRates = FALSE,
+                                     runCohortOverlap = FALSE,
+                                     runCohortCharacterization = FALSE,
+                                     runTemporalCohortCharacterization = FALSE,
+                                     minCellCount = 5)
+
+
+
+# outputFolder <- "C:/Users/tonys/Desktop/DBMIPLPPhWGResults_2020q4r1_2/Analysis_1/plpResult"
+
+# To view the results:
+# Optional: if there are results zip files from multiple sites in a folder, this merges them, which will speed up starting the viewer:
+# CohortDiagnostics::preMergeDiagnosticsFiles(file.path(outputFolder, "diagnosticsExport"))
+
+# Use this to view the results. Multiple zip files can be in the same folder. If the files were pre-merged, this is automatically detected: 
+CohortDiagnostics::launchDiagnosticsExplorer(file.path(outputFolder, "diagnosticsExport"))
+
+
+# To explore a specific cohort in the local database, viewing patient profiles:
+# CohortDiagnostics::launchCohortExplorer(connectionDetails = connectionDetails,
+#                                        cdmDatabaseSchema = cdmDatabaseSchema,
+#                                        cohortDatabaseSchema = cohortDatabaseSchema,
+#                                        cohortTable = cohortTable,
+#                                        cohortId = 12348)
+# Where 123 is the ID of the cohort you wish to inspect.

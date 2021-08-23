@@ -1,0 +1,25 @@
+{
+    "id": "A47E7D22",
+    "path": "~/Research/characterizationPaperPackage/extras/CodeToRun.R",
+    "project_path": "extras/CodeToRun.R",
+    "type": "r_source",
+    "hash": "813748904",
+    "contents": "",
+    "dirty": false,
+    "created": 1616176438395.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "cursorPosition": "98,44",
+        "scrollLine": "74",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1629098241,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1629098241436,
+    "read_only": false,
+    "read_only_alternatives": []
+}

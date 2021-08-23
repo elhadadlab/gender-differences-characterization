@@ -1,0 +1,68 @@
+library(examplePackage)
+# Load the package
+library(examplePackage)
+path <- 'c:/Users/tonys/OneDrive/Documents/Research/examplePackage/'
+# Optional: specify where the temporary files will be created:
+options(andromedaTempFolder = file.path(path, "andromedaTemp"))
+# Maximum number of cores to be used:
+maxCores <- parallel::detectCores()
+# Details for connecting to the server:
+connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server",
+server = "10.115.115.119",
+user = "tonysun",
+password = "Scientificprogress!123",
+)
+# For Oracle: define a schema that can be used to emulate temp tables:
+oracleTempSchema <- NULL
+# Details specific to the database:
+outputFolder <- "c:/Users/tonys/OneDrive/Documents/Research/examplePackage/output"
+cdmDatabaseSchema <- "ohdsi_cumc_2020q1r4.dbo"
+cohortDatabaseSchema <- "ohdsi_cumc_2020q1r4.results"
+cohortTable <- "tony_demo"
+databaseId <- "CUMC"
+databaseName <- "tony demo"
+databaseDescription <- "description"
+# Use this to run the cohorttDiagnostics. The results will be stored in the diagnosticsExport subfolder of the outputFolder. This can be shared between sites.
+examplePackage::runCohortDiagnostics(connectionDetails = connectionDetails,
+cdmDatabaseSchema = cdmDatabaseSchema,
+cohortDatabaseSchema = cohortDatabaseSchema,
+cohortTable = cohortTable,
+oracleTempSchema = oracleTempSchema,
+outputFolder = outputFolder,
+databaseId = databaseId,
+databaseName = databaseName,
+databaseDescription = databaseDescription,
+createCohorts = TRUE,
+runInclusionStatistics = TRUE,
+runIncludedSourceConcepts = TRUE,
+runOrphanConcepts = TRUE,
+runTimeDistributions = TRUE,
+runBreakdownIndexEvents = TRUE,
+runIncidenceRates = TRUE,
+runCohortOverlap = TRUE,
+runCohortCharacterization = TRUE,
+runTemporalCohortCharacterization = TRUE,
+minCellCount = 5)
+# To view the results:
+# Optional: if there are results zip files from multiple sites in a folder, this merges them, which will speed up starting the viewer:
+CohortDiagnostics::preMergeDiagnosticsFiles(file.path(outputFolder, "diagnosticsExport"))
+# Use this to view the results. Multiple zip files can be in the same folder. If the files were pre-merged, this is automatically detected:
+CohortDiagnostics::launchDiagnosticsExplorer(file.path(outputFolder, "diagnosticsExport"))
+CohortDiagnostics::launchCohortExplorer(connectionDetails = connectionDetails,
+cdmDatabaseSchema = cdmDatabaseSchema,
+cohortDatabaseSchema = cohortDatabaseSchema,
+cohortTable = cohortTable,
+cohortId = 12348)
+# To explore a specific cohort in the local database, viewing patient profiles:
+CohortDiagnostics::launchCohortExplorer(connectionDetails = connectionDetails,
+cdmDatabaseSchema = cdmDatabaseSchema,
+cohortDatabaseSchema = cohortDatabaseSchema,
+cohortTable = cohortTable,
+cohortId = 12348)
+# Use this to view the results. Multiple zip files can be in the same folder. If the files were pre-merged, this is automatically detected:
+CohortDiagnostics::launchDiagnosticsExplorer(file.path(outputFolder, "diagnosticsExport"))
+# Make sure to install all dependencies (not needed if already done):
+install.packages("SqlRender")
+install.packages("DatabaseConnector")
+install.packages("ggplot2")
+install.packages("ParallelLogger")

@@ -1,0 +1,7 @@
+install.package('devtools')
+devtools::install_github("OHDSI/FeatureExtraction")
+devtools::install_github("ohdsi/PatientLevelPrediction")
+
+package("ohdsi/PatientLevelPrediction")
+
+PatientLevelPrediction::viewMultiplePlp("/Users/pmd2137/Desktop/DBMIPLPPhWGResults_2020q4r1_2")

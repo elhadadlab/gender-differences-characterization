@@ -1,0 +1,512 @@
+CohortDiagnostics::launchDiagnosticsExplorer(file.path(outputFolder, "diagnosticsExport"))
+# Details specific to the database:
+outputFolder <- "c:/Users/tonys/Documents/Research/examplePackage/output"
+cdmDatabaseSchema <- "ohdsi_cumc_2020q1r4.dbo"
+cohortDatabaseSchema <- "ohdsi_cumc_2020q1r4.results"
+cohortTable <- "tony_CUMC_results_pheWG"
+databaseId <- "CUMC"
+databaseName <- "tony_CUMC_results_pheWG"
+databaseDescription <- "description"
+# Use this to view the results. Multiple zip files can be in the same folder. If the files were pre-merged, this is automatically detected:
+CohortDiagnostics::launchDiagnosticsExplorer(file.path(outputFolder, "diagnosticsExport"))
+library(examplePackage)
+# Load the package
+library(examplePackage)
+path <- 'c:/Users/tonys/Research/examplePackage/'
+# Optional: specify where the temporary files will be created:
+options(andromedaTempFolder = file.path(path, "andromedaTemp"))
+# Maximum number of cores to be used:
+maxCores <- parallel::detectCores()
+# Details for connecting to the server:
+connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server",
+server = "10.115.115.119",
+user = "tonysun",
+password = "Scientificprogress!123",
+)
+# For Oracle: define a schema that can be used to emulate temp tables:
+oracleTempSchema <- NULL
+# Details specific to the database:
+outputFolder <- "c:/Users/tonys/Documents/Research/examplePackage/output"
+cdmDatabaseSchema <- "ohdsi_cumc_2020q1r4.dbo"
+cohortDatabaseSchema <- "ohdsi_cumc_2020q1r4.results"
+cohortTable <- "tony_CUMC_results_pheWG"
+databaseId <- "CUMC"
+databaseName <- "tony_CUMC_results_pheWG"
+databaseDescription <- "description"
+# Use this to run the cohorttDiagnostics. The results will be stored in the diagnosticsExport subfolder of the outputFolder. This can be shared between sites.
+examplePackage::runCohortDiagnostics(connectionDetails = connectionDetails,
+cdmDatabaseSchema = cdmDatabaseSchema,
+cohortDatabaseSchema = cohortDatabaseSchema,
+cohortTable = cohortTable,
+oracleTempSchema = oracleTempSchema,
+outputFolder = outputFolder,
+databaseId = databaseId,
+databaseName = databaseName,
+databaseDescription = databaseDescription,
+createCohorts = TRUE,
+runInclusionStatistics = TRUE,
+runIncludedSourceConcepts = TRUE,
+runOrphanConcepts = TRUE,
+runTimeDistributions = TRUE,
+runBreakdownIndexEvents = TRUE,
+runIncidenceRates = TRUE,
+runCohortOverlap = TRUE,
+runCohortCharacterization = TRUE,
+runTemporalCohortCharacterization = TRUE,
+minCellCount = 5)
+library(examplePackage)
+install.packages("SqlRender")
+install.packages("DatabaseConnector")
+install.packages("ggplot2")
+install.packages("ParallelLogger")
+install.packages("readr")
+install.packages("tibble")
+install.packages("dplyr")
+install.packages("RJSONIO")
+install.packages("devtools")
+devtools::install_github("FeatureExtraction")
+devtools::install_github("ROhdsiWebApi")
+devtools::install_github("CohortDiagnostics")
+install.packages("DatabaseConnector")
+install.packages("dplyr")
+install.packages("DatabaseConnector")
+install.packages("dplyr")
+library(examplePackage)
+path <- 'c:/Users/tonys/Research/examplePackage/'
+# Optional: specify where the temporary files will be created:
+options(andromedaTempFolder = file.path(path, "andromedaTemp"))
+# Maximum number of cores to be used:
+maxCores <- parallel::detectCores()
+# Details for connecting to the server:
+connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server",
+server = "10.115.115.119",
+user = "tonysun",
+password = "Scientificprogress!123",
+)
+oracleTempSchema <- NULL
+# Details specific to the database:
+outputFolder <- "c:/Users/tonys/Documents/Research/examplePackage/output"
+cdmDatabaseSchema <- "ohdsi_cumc_2020q1r4.dbo"
+cohortDatabaseSchema <- "ohdsi_cumc_2020q1r4.results"
+cohortTable <- "tony_CUMC_results_old_crohns"
+databaseId <- "CUMC"
+databaseName <- "tony_CUMC_results_old_crohns"
+databaseDescription <- "description"
+# Use this to run the cohorttDiagnostics. The results will be stored in the diagnosticsExport subfolder of the outputFolder. This can be shared between sites.
+examplePackage::runCohortDiagnostics(connectionDetails = connectionDetails,
+cdmDatabaseSchema = cdmDatabaseSchema,
+cohortDatabaseSchema = cohortDatabaseSchema,
+cohortTable = cohortTable,
+oracleTempSchema = oracleTempSchema,
+outputFolder = outputFolder,
+databaseId = databaseId,
+databaseName = databaseName,
+databaseDescription = databaseDescription,
+createCohorts = TRUE,
+runInclusionStatistics = FALSE,
+runIncludedSourceConcepts = FALSE,
+runOrphanConcepts = FALSE,
+runTimeDistributions = FALSE,
+runBreakdownIndexEvents = FALSE,
+runIncidenceRates = FALSE,
+runCohortOverlap = FALSE,
+runCohortCharacterization = FALSE,
+runTemporalCohortCharacterization = FALSE,
+minCellCount = 5)
+install.packages("rlang")
+install.packages("rlang")
+install.packages("rlang")
+install.packages("rlang")
+library(examplePackage)
+# Load the package
+library(examplePackage)
+path <- 'c:/Users/tonys/Research/examplePackage/'
+# Optional: specify where the temporary files will be created:
+options(andromedaTempFolder = file.path(path, "andromedaTemp"))
+# Maximum number of cores to be used:
+maxCores <- parallel::detectCores()
+# Details for connecting to the server:
+connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server",
+server = "10.115.115.119",
+user = "tonysun",
+password = "Scientificprogress!123",
+)
+# For Oracle: define a schema that can be used to emulate temp tables:
+oracleTempSchema <- NULL
+# Details specific to the database:
+outputFolder <- "c:/Users/tonys/Documents/Research/examplePackage/output"
+cdmDatabaseSchema <- "ohdsi_cumc_2020q1r4.dbo"
+cohortDatabaseSchema <- "ohdsi_cumc_2020q1r4.results"
+cohortTable <- "tony_CUMC_results_old_crohns"
+databaseId <- "CUMC"
+databaseName <- "tony_CUMC_results_old_crohns"
+databaseDescription <- "description"
+# cohortTable <- "tony_CUMC_results_pheWG"
+# databaseId <- "CUMC"
+# databaseName <- "tony_CUMC_results_pheWG"
+# databaseDescription <- "description"
+# Use this to run the cohorttDiagnostics. The results will be stored in the diagnosticsExport subfolder of the outputFolder. This can be shared between sites.
+examplePackage::runCohortDiagnostics(connectionDetails = connectionDetails,
+cdmDatabaseSchema = cdmDatabaseSchema,
+cohortDatabaseSchema = cohortDatabaseSchema,
+cohortTable = cohortTable,
+oracleTempSchema = oracleTempSchema,
+outputFolder = outputFolder,
+databaseId = databaseId,
+databaseName = databaseName,
+databaseDescription = databaseDescription,
+createCohorts = TRUE,
+runInclusionStatistics = FALSE,
+runIncludedSourceConcepts = FALSE,
+runOrphanConcepts = FALSE,
+runTimeDistributions = FALSE,
+runBreakdownIndexEvents = FALSE,
+runIncidenceRates = FALSE,
+runCohortOverlap = FALSE,
+runCohortCharacterization = FALSE,
+runTemporalCohortCharacterization = FALSE,
+minCellCount = 5)
+remove.packages(rlang)
+install.packages("rlang")
+install.packages("rlang")
+install.packages("rlang")
+library(examplePackage)
+path <- 'c:/Users/tonys/Research/examplePackage/'
+# Optional: specify where the temporary files will be created:
+options(andromedaTempFolder = file.path(path, "andromedaTemp"))
+# Maximum number of cores to be used:
+maxCores <- parallel::detectCores()
+# Details for connecting to the server:
+connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server",
+server = "10.115.115.119",
+user = "tonysun",
+password = "Scientificprogress!123",
+)
+# For Oracle: define a schema that can be used to emulate temp tables:
+oracleTempSchema <- NULL
+# Details specific to the database:
+outputFolder <- "c:/Users/tonys/Documents/Research/examplePackage/output"
+cdmDatabaseSchema <- "ohdsi_cumc_2020q1r4.dbo"
+cohortDatabaseSchema <- "ohdsi_cumc_2020q1r4.results"
+cohortTable <- "tony_CUMC_results_old_crohns"
+databaseId <- "CUMC"
+databaseName <- "tony_CUMC_results_old_crohns"
+databaseDescription <- "description"
+# cohortTable <- "tony_CUMC_results_pheWG"
+# databaseId <- "CUMC"
+# databaseName <- "tony_CUMC_results_pheWG"
+# databaseDescription <- "description"
+# Use this to run the cohorttDiagnostics. The results will be stored in the diagnosticsExport subfolder of the outputFolder. This can be shared between sites.
+examplePackage::runCohortDiagnostics(connectionDetails = connectionDetails,
+cdmDatabaseSchema = cdmDatabaseSchema,
+cohortDatabaseSchema = cohortDatabaseSchema,
+cohortTable = cohortTable,
+oracleTempSchema = oracleTempSchema,
+outputFolder = outputFolder,
+databaseId = databaseId,
+databaseName = databaseName,
+databaseDescription = databaseDescription,
+createCohorts = TRUE,
+runInclusionStatistics = FALSE,
+runIncludedSourceConcepts = FALSE,
+runOrphanConcepts = FALSE,
+runTimeDistributions = FALSE,
+runBreakdownIndexEvents = FALSE,
+runIncidenceRates = FALSE,
+runCohortOverlap = FALSE,
+runCohortCharacterization = FALSE,
+runTemporalCohortCharacterization = FALSE,
+minCellCount = 5)
+install.packages("rlang")
+install.packages("rlang")
+package.install("rlang")
+install.packages("rlang")
+install.packages("rlang")
+install.packages("rlang")
+library(examplePackage)
+library(rlang)
+sessionInfo()
+library(examplePackage)
+sessionInfo()
+library(examplePackage)
+sessionInfo()
+sessionInfo()
+install.packages("rlang")
+install.packages("rlang")
+install.packages("rlang")
+install.packages("rlang")
+remove.packages("rlang", lib="~/R/win-library/4.0")
+install.packages("rlang")
+install.packages("rlang")
+# Load the package
+library(examplePackage)
+path <- 'c:/Users/tonys/Research/examplePackage/'
+# Optional: specify where the temporary files will be created:
+options(andromedaTempFolder = file.path(path, "andromedaTemp"))
+# Maximum number of cores to be used:
+maxCores <- parallel::detectCores()
+# Details for connecting to the server:
+connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server",
+server = "10.115.115.119",
+user = "tonysun",
+password = "Scientificprogress!123",
+)
+# For Oracle: define a schema that can be used to emulate temp tables:
+oracleTempSchema <- NULL
+# Details specific to the database:
+outputFolder <- "c:/Users/tonys/Documents/Research/examplePackage/output"
+cdmDatabaseSchema <- "ohdsi_cumc_2020q1r4.dbo"
+cohortDatabaseSchema <- "ohdsi_cumc_2020q1r4.results"
+cohortTable <- "tony_CUMC_results_old_crohns"
+databaseId <- "CUMC"
+databaseName <- "tony_CUMC_results_old_crohns"
+databaseDescription <- "description"
+# cohortTable <- "tony_CUMC_results_pheWG"
+# databaseId <- "CUMC"
+# databaseName <- "tony_CUMC_results_pheWG"
+# databaseDescription <- "description"
+# Use this to run the cohorttDiagnostics. The results will be stored in the diagnosticsExport subfolder of the outputFolder. This can be shared between sites.
+examplePackage::runCohortDiagnostics(connectionDetails = connectionDetails,
+cdmDatabaseSchema = cdmDatabaseSchema,
+cohortDatabaseSchema = cohortDatabaseSchema,
+cohortTable = cohortTable,
+oracleTempSchema = oracleTempSchema,
+outputFolder = outputFolder,
+databaseId = databaseId,
+databaseName = databaseName,
+databaseDescription = databaseDescription,
+createCohorts = TRUE,
+runInclusionStatistics = FALSE,
+runIncludedSourceConcepts = FALSE,
+runOrphanConcepts = FALSE,
+runTimeDistributions = FALSE,
+runBreakdownIndexEvents = FALSE,
+runIncidenceRates = FALSE,
+runCohortOverlap = FALSE,
+runCohortCharacterization = FALSE,
+runTemporalCohortCharacterization = FALSE,
+minCellCount = 5)
+# Use this to run the cohorttDiagnostics. The results will be stored in the diagnosticsExport subfolder of the outputFolder. This can be shared between sites.
+examplePackage::runCohortDiagnostics(connectionDetails = connectionDetails,
+cdmDatabaseSchema = cdmDatabaseSchema,
+cohortDatabaseSchema = cohortDatabaseSchema,
+cohortTable = cohortTable,
+oracleTempSchema = oracleTempSchema,
+outputFolder = outputFolder,
+databaseId = databaseId,
+databaseName = databaseName,
+databaseDescription = databaseDescription,
+createCohorts = TRUE,
+runInclusionStatistics = FALSE,
+runIncludedSourceConcepts = FALSE,
+runOrphanConcepts = FALSE,
+runTimeDistributions = FALSE,
+runBreakdownIndexEvents = FALSE,
+runIncidenceRates = FALSE,
+runCohortOverlap = FALSE,
+runCohortCharacterization = FALSE,
+runTemporalCohortCharacterization = FALSE,
+minCellCount = 5)
+getwd
+getwd()
+library(examplePackage)
+library(examplePackage)
+path <- 'c:/Users/tonys/Research/examplePackage/'
+# Optional: specify where the temporary files will be created:
+options(andromedaTempFolder = file.path(path, "andromedaTemp"))
+# Maximum number of cores to be used:
+maxCores <- parallel::detectCores()
+# Details for connecting to the server:
+connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server",
+server = "10.115.115.119",
+user = "tonysun",
+password = "Scientificprogress!123",
+)
+# For Oracle: define a schema that can be used to emulate temp tables:
+oracleTempSchema <- NULL
+# Details specific to the database:
+outputFolder <- "c:/Users/tonys/Documents/Research/examplePackage/output"
+cdmDatabaseSchema <- "ohdsi_cumc_2020q1r4.dbo"
+cohortDatabaseSchema <- "ohdsi_cumc_2020q1r4.results"
+cohortTable <- "tony_CUMC_results_old_crohns"
+databaseId <- "CUMC"
+databaseName <- "tony_CUMC_results_old_crohns"
+databaseDescription <- "description"
+# cohortTable <- "tony_CUMC_results_pheWG"
+# databaseId <- "CUMC"
+# databaseName <- "tony_CUMC_results_pheWG"
+# databaseDescription <- "description"
+# Use this to run the cohorttDiagnostics. The results will be stored in the diagnosticsExport subfolder of the outputFolder. This can be shared between sites.
+examplePackage::runCohortDiagnostics(connectionDetails = connectionDetails,
+cdmDatabaseSchema = cdmDatabaseSchema,
+cohortDatabaseSchema = cohortDatabaseSchema,
+cohortTable = cohortTable,
+oracleTempSchema = oracleTempSchema,
+outputFolder = outputFolder,
+databaseId = databaseId,
+databaseName = databaseName,
+databaseDescription = databaseDescription,
+createCohorts = TRUE,
+runInclusionStatistics = FALSE,
+runIncludedSourceConcepts = FALSE,
+runOrphanConcepts = FALSE,
+runTimeDistributions = FALSE,
+runBreakdownIndexEvents = FALSE,
+runIncidenceRates = FALSE,
+runCohortOverlap = FALSE,
+runCohortCharacterization = FALSE,
+runTemporalCohortCharacterization = FALSE,
+minCellCount = 5)
+library(examplePackage)
+path <- 'c:/Users/tonys/Research/examplePackage/'
+# Optional: specify where the temporary files will be created:
+options(andromedaTempFolder = file.path(path, "andromedaTemp"))
+# Maximum number of cores to be used:
+maxCores <- parallel::detectCores()
+# Details for connecting to the server:
+connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server",
+server = "10.115.115.119",
+user = "tonysun",
+password = "Scientificprogress!123",
+)
+# For Oracle: define a schema that can be used to emulate temp tables:
+oracleTempSchema <- NULL
+# Details specific to the database:
+outputFolder <- "c:/Users/tonys/Documents/Research/examplePackage/output"
+cdmDatabaseSchema <- "ohdsi_cumc_2020q1r4.dbo"
+cohortDatabaseSchema <- "ohdsi_cumc_2020q1r4.results"
+cohortTable <- "tony_CUMC_results_old_crohns"
+databaseId <- "CUMC"
+databaseName <- "tony_CUMC_results_old_crohns"
+databaseDescription <- "description"
+# cohortTable <- "tony_CUMC_results_pheWG"
+# databaseId <- "CUMC"
+# databaseName <- "tony_CUMC_results_pheWG"
+# databaseDescription <- "description"
+# Use this to run the cohorttDiagnostics. The results will be stored in the diagnosticsExport subfolder of the outputFolder. This can be shared between sites.
+examplePackage::runCohortDiagnostics(connectionDetails = connectionDetails,
+cdmDatabaseSchema = cdmDatabaseSchema,
+cohortDatabaseSchema = cohortDatabaseSchema,
+cohortTable = cohortTable,
+oracleTempSchema = oracleTempSchema,
+outputFolder = outputFolder,
+databaseId = databaseId,
+databaseName = databaseName,
+databaseDescription = databaseDescription,
+createCohorts = TRUE,
+runInclusionStatistics = FALSE,
+runIncludedSourceConcepts = FALSE,
+runOrphanConcepts = FALSE,
+runTimeDistributions = FALSE,
+runBreakdownIndexEvents = FALSE,
+runIncidenceRates = FALSE,
+runCohortOverlap = FALSE,
+runCohortCharacterization = FALSE,
+runTemporalCohortCharacterization = FALSE,
+minCellCount = 5)
+library(examplePackage)
+library(examplePackage)
+path <- 'c:/Users/tonys/Research/examplePackage/'
+# Optional: specify where the temporary files will be created:
+options(andromedaTempFolder = file.path(path, "andromedaTemp"))
+# Maximum number of cores to be used:
+maxCores <- parallel::detectCores()
+# Details for connecting to the server:
+connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server",
+server = "10.115.115.119",
+user = "tonysun",
+password = "Scientificprogress!123",
+)
+# For Oracle: define a schema that can be used to emulate temp tables:
+oracleTempSchema <- NULL
+# Details specific to the database:
+outputFolder <- "c:/Users/tonys/Documents/Research/examplePackage/output"
+cdmDatabaseSchema <- "ohdsi_cumc_2020q1r4.dbo"
+cohortDatabaseSchema <- "ohdsi_cumc_2020q1r4.results"
+cohortTable <- "tony_CUMC_results_old_crohns"
+databaseId <- "CUMC"
+databaseName <- "tony_CUMC_results_old_crohns"
+databaseDescription <- "description"
+# cohortTable <- "tony_CUMC_results_pheWG"
+# databaseId <- "CUMC"
+# databaseName <- "tony_CUMC_results_pheWG"
+# databaseDescription <- "description"
+# Use this to run the cohorttDiagnostics. The results will be stored in the diagnosticsExport subfolder of the outputFolder. This can be shared between sites.
+examplePackage::runCohortDiagnostics(connectionDetails = connectionDetails,
+cdmDatabaseSchema = cdmDatabaseSchema,
+cohortDatabaseSchema = cohortDatabaseSchema,
+cohortTable = cohortTable,
+oracleTempSchema = oracleTempSchema,
+outputFolder = outputFolder,
+databaseId = databaseId,
+databaseName = databaseName,
+databaseDescription = databaseDescription,
+createCohorts = TRUE,
+runInclusionStatistics = FALSE,
+runIncludedSourceConcepts = FALSE,
+runOrphanConcepts = FALSE,
+runTimeDistributions = FALSE,
+runBreakdownIndexEvents = FALSE,
+runIncidenceRates = FALSE,
+runCohortOverlap = FALSE,
+runCohortCharacterization = FALSE,
+runTemporalCohortCharacterization = FALSE,
+minCellCount = 5)
+library(examplePackage)
+library(examplePackage)
+path <- 'c:/Users/tonys/Research/examplePackage/'
+# Optional: specify where the temporary files will be created:
+options(andromedaTempFolder = file.path(path, "andromedaTemp"))
+# Maximum number of cores to be used:
+maxCores <- parallel::detectCores()
+# Details for connecting to the server:
+connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server",
+server = "10.115.115.119",
+user = "tonysun",
+password = "Scientificprogress!123",
+)
+# For Oracle: define a schema that can be used to emulate temp tables:
+oracleTempSchema <- NULL
+# Details specific to the database:
+outputFolder <- "c:/Users/tonys/Documents/Research/examplePackage/output"
+cdmDatabaseSchema <- "ohdsi_cumc_2020q1r4.dbo"
+cohortDatabaseSchema <- "ohdsi_cumc_2020q1r4.results"
+cohortTable <- "tony_CUMC_results_old_crohns"
+databaseId <- "CUMC"
+databaseName <- "tony_CUMC_results_old_crohns"
+databaseDescription <- "description"
+# cohortTable <- "tony_CUMC_results_pheWG"
+# databaseId <- "CUMC"
+# databaseName <- "tony_CUMC_results_pheWG"
+# databaseDescription <- "description"
+# Use this to run the cohorttDiagnostics. The results will be stored in the diagnosticsExport subfolder of the outputFolder. This can be shared between sites.
+examplePackage::runCohortDiagnostics(connectionDetails = connectionDetails,
+cdmDatabaseSchema = cdmDatabaseSchema,
+cohortDatabaseSchema = cohortDatabaseSchema,
+cohortTable = cohortTable,
+oracleTempSchema = oracleTempSchema,
+outputFolder = outputFolder,
+databaseId = databaseId,
+databaseName = databaseName,
+databaseDescription = databaseDescription,
+createCohorts = TRUE,
+runInclusionStatistics = FALSE,
+runIncludedSourceConcepts = FALSE,
+runOrphanConcepts = FALSE,
+runTimeDistributions = FALSE,
+runBreakdownIndexEvents = FALSE,
+runIncidenceRates = FALSE,
+runCohortOverlap = FALSE,
+runCohortCharacterization = FALSE,
+runTemporalCohortCharacterization = FALSE,
+minCellCount = 5)
+library(examplePackage)
+outputFolder <- "C:\Users\tonys\Desktop\DBMIPLPPhWGResults_2020q4r1_2\Analysis_1\plpResult"
+outputFolder <- "C:/Users/tonys/Desktop/DBMIPLPPhWGResults_2020q4r1_2/Analysis_1/plpResult"
+CohortDiagnostics::preMergeDiagnosticsFiles(file.path(outputFolder, "diagnosticsExport"))
+install.package('devtools')
+devtools::install_github("OHDSI/FeatureExtraction")
+# Make sure to install all dependencies (not needed if already done):
+install.packages("SqlRender")
+install.packages("DatabaseConnector")
+install.packages("ggplot2")

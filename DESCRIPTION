@@ -1,0 +1,12 @@
+Package: characterizationPaperPackage
+Type: Package
+Title: A Package Skeleton for Characterizations, built on CohortDiagnostics
+Version: 0.0.1
+Author: Tony Sun [aut, cre]
+Maintainer: Tony Sun <tys2108@cumc.columbia.edu>
+Description: For running our characterizations.
+Depends:
+    DatabaseConnector (>= 2.2.0)
+Imports:
+	CohortDiagnostics
+  Reticulate
