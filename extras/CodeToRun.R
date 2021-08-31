@@ -1,6 +1,5 @@
 # Load the package
 library(characterizationPaperPackage)
-library(reticulate)
 
 # Parameters [loaded from credentials.csv, which is not uploaded to Github!]
 CREDENTIALS  <- 'C:\\Users\\tonys\\Documents\\Research\\csv\\credentials.csv' # login credentials
@@ -87,6 +86,14 @@ for (i in 1:nrow(cohortsToCreate)) {
   DatabaseConnector::executeSql(conn, sql) #}
 }
 
+# Run processing for all_condition_occurrence_summary.sql script
+sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "all_condition_occurrence_summary",
+                                         packageName = "characterizationPaperPackage",
+                                         dbms = attr(conn, "dbms"))
+
+DatabaseConnector::executeSql(conn, sql)
+
+
 # Run processing sexdiff_cohort_reference_ver5.sql script
 sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "sexdiff_cohort_reference_ver5.sql",
                                          packageName = "characterizationPaperPackage",
@@ -99,6 +106,8 @@ DatabaseConnector::executeSql(conn, sql)
 
 use_python(PYTHON_PATH) # Python interpreter specified in parameters
 # https://community.rstudio.com/t/rpytools-error-recurring-with-package-reticulate/66625
+# If it does throw the rpytools error, it's just a runtime error that doesn't actually
+# Inhibit the scripts.
 sys <- import("sys", convert = TRUE) # Fixes run-time warning and error?
 py_run_file('inst/py/settings.py')
 py_run_file('creating_summaries.py')
@@ -106,6 +115,17 @@ py_run_file('tfidf_vectorizer.py')
 # py_run_file('') # commented out, this creates prevalence graphs locally.
 py_run_file('diagnostic_delay.py') 
 
+
+# For uploading the results. You should have received the key file from the study coordinator:
+# keyFileName <- paste(PACKAGE_PATH, "study-data-site-covid19.dat") #TODO: Talk to Sena
+# userName <- "study-data-site-covid19"
+
+# When finished with reviewing the diagnostics, use the next command to upload the diagnostic results
+# uploadDiagnosticsResults(outputFolder, keyFileName, userName)
+
+
+# When finished with reviewing the results, use the next command upload study results to OHDSI SFTP
+# server: uploadStudyResults(outputFolder, keyFileName, userName)
 
 # example <- DatabaseConnector::querySql(conn, "select * from ohdsi_cumc_2021q1r2.results.pbr_sexdiff_cohort_covarate_summary_v5 where cohort_definition_id = 11117")
 

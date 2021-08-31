@@ -12,3 +12,7 @@ install.packages("reticulate")
 install.packages('Rcpp')
 devtools::install_github("ROhdsiWebApi")
 devtools::install_github("CohortDiagnostics")
+
+install.packages("drat")
+drat::addRepo("OHDSI")
+install.packages("OhdsiSharing")

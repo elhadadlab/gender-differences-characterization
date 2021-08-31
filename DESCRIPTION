@@ -4,9 +4,14 @@ Title: A Package Skeleton for Characterizations, built on CohortDiagnostics
 Version: 0.0.1
 Author: Tony Sun [aut, cre]
 Maintainer: Tony Sun <tys2108@cumc.columbia.edu>
-Description: For running our characterizations.
+Description: For running large-scale diagnostic characterizations.
 Depends:
-    DatabaseConnector (>= 2.2.0)
+  DatabaseConnector (>= 2.4.0)
 Imports:
-	CohortDiagnostics
-  Reticulate
+	CohortDiagnostics (>= 1.2.2),
+  reticulate (>= 1.20),
+  OhdsiSharing (>= 0.2.2)
+Remotes:
+  OHDSI/CohortDiagnostics,
+  OHDSI/FeatureExtraction,
+  OHDSI/OhdsiSharing
