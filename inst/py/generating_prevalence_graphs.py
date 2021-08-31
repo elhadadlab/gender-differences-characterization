@@ -101,10 +101,10 @@ plt.vlines(x=1.53, ymin=0, ymax=350, color='black')
 plt.hlines(y=350, xmin=1.53, xmax=1.8, color='black')
 plt.hlines(y=300, xmin=2/3 + 0.02, xmax=1.8, color='black')
 
-fig = plt.gcf()
-fig.set_size_inches(6, 6)
-fig.savefig('../../output/graphs/' + db + '_female_rr.png')
-
+figa = plt.figure(num=1)
+figa.set_size_inches(6, 6)
+figa.savefig('../../output/graphs/' + db + '_female_rr.png')
+plt.close(figa)
 
 ### Normed customized risk ratio [centered at zero]:
 rr_female = list(all_conds_df[valid_conds]['rr_female'])
@@ -150,9 +150,10 @@ plt.title('Distribution of increased risk: $\mu = ' + str(np.round(mean, 2)) + '
 # plt.text(2, 300, '$RR_{female}$ < 1:: 4357 concepts')
 plt.xlabel('Percentage increased risk (relative to other class)')
 plt.ylabel('Count')
-fig = plt.gcf()
-fig.set_size_inches(6, 6)
-fig.savefig('../../output/graphs/' + db + '_increased_risk.png')
+figb = plt.figure(num=1)
+figb.set_size_inches(6, 6)
+figb.savefig('../../output/graphs/' + db + '_increased_risk.png')
+plt.close(figb)
 
 #  Age diff
 all_conds_df['avg_age_diff'] = all_conds_df['avg_age_female'] - all_conds_df['avg_age_male']
@@ -191,8 +192,10 @@ plt.text(-41, 250, str(lessthan10) + ' conditions w/\n10+ year older\nfirst age 
 
 plt.xlabel('Age difference (female - male)')
 plt.ylabel('Count')
-fig = plt.gcf()
-fig.set_size_inches(6, 6)
-fig.savefig('../../output/graphs/' + db + '_age_dist.png')
+figc = plt.figure(num=1)
+figc.set_size_inches(6, 6)
+figc.savefig('../../output/graphs/' + db + '_age_dist.png')
+plt.close(figc)
 
+print('Finished generating prevalence graphs... see characterizationPaperPackage/output/graphs/')
 conn.close()
