@@ -13,6 +13,7 @@ In order to run this package, you will need to:
     - In *inst/py/settings.py* change line 20 [the `credentials` variable's `read_csv`] to the filepath for *empty_credentials.csv*
     - Fill in the various parameters at the top of *extras/CodeToRun.R*.  Specifically, the `PATH` to the credentials file, the system Python path [e.g. to the Anaconda installation or Python 3.9 installation with the various installed Python packages], etc.
     - In *inst/sql_server/sexdiff_cohort_reference_v5.sql*, change the 1st line to the name of your database [should match what you put into *empty_credentials.csv*]. Likewise, change line 155, line 166, and line 305.
+    - In *inst/sql_server/all_condition_occurrence_summary.sql*, change the 1st line to the name of your database [again, should match what you put into *empty_credentials.csv*]. Likewise, change line 51.
 
 3. Open the R project in R studio (e.g. by double-clicking on the *.Rproj* file).
 
