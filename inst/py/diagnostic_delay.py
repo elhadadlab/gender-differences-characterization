@@ -27,10 +27,10 @@ concept_id_mapper = defaultdict(dd) # dd is a module-level function
 
 with open('../../output/created_files/' + db + '_common_symptoms.pickle', 'rb') as handle:
     concept_id_mapper = pickle.load(handle)
-    
+
 with open('../csv/exclude_concepts_all_final.csv', 'r') as handle:
     excluded = handle.readlines()
-    
+
 for summary_file in tqdm.tqdm(glob.glob(summary_fp + '*')):
     cohort_file_id = summary_file.split('\\')[-1].split('_')[0]
     sql_query_string = 'select * from ' + db + '.results.pbr_sexdiff_cohort_ttonset_v5 where cohort_definition_id = '
@@ -77,8 +77,10 @@ for summary_file in tqdm.tqdm(glob.glob(summary_fp + '*')):
 
     # Sorted list takes a lot more space. Let's just store the counted values
     # (valid_top_N, TTO_val_MAX_women, TTO_val_MAX_men, condition_name_MAX_women, condition_name_MAX_men)
-    
+
     per_patient_TTD_dict[db][cohort_id] = (valid_top_N, Counter(TTO_val_MAX_women), Counter(TTO_val_MAX_men), Counter(condition_name_MAX_women), Counter(condition_name_MAX_men))
 
 with open('../../output/created_files/' + db + '_per_patient_TTD_.pickle', 'wb') as handle:
     pickle.dump(per_patient_TTD_dict[db], handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+conn.close()

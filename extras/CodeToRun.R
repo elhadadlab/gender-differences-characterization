@@ -87,7 +87,7 @@ for (i in 1:nrow(cohortsToCreate)) {
 }
 
 # Run processing for all_condition_occurrence_summary.sql script
-sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "all_condition_occurrence_summary",
+sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "all_condition_occurrence_summary.sql",
                                          packageName = "characterizationPaperPackage",
                                          dbms = attr(conn, "dbms"))
 
@@ -112,9 +112,10 @@ sys <- import("sys", convert = TRUE) # Fixes run-time warning and error?
 py_run_file('inst/py/settings.py')
 py_run_file('creating_summaries.py')
 py_run_file('tfidf_vectorizer.py')
-# py_run_file('') # commented out, this creates prevalence graphs locally.
+py_run_file('generating_prevalence_graphs.py')
 py_run_file('diagnostic_delay.py') 
 
+disconnect(connection = conn)
 
 # For uploading the results. You should have received the key file from the study coordinator:
 # keyFileName <- paste(PACKAGE_PATH, "study-data-site-covid19.dat") #TODO: Talk to Sena
