@@ -2,28 +2,61 @@
 library(characterizationPaperPackage)
 
 # Parameters [loaded from credentials.csv, which is not uploaded to Github!]
-CREDENTIALS  <- 'C:\\Users\\tonys\\Documents\\Research\\csv\\credentials.csv' # login credentials
+#CREDENTIALS  <- 'C:\\Users\\tonys\\Documents\\Research\\csv\\credentials.csv' # login credentials
 private.data = read.csv(CREDENTIALS, fileEncoding = 'UTF-8-BOM')
 
-PYTHON_PATH  <- 'C:\\Users\\tonys\\AppData\\Local\\Programs\\Python\\Python39'
+#PYTHON_PATH  <- 'C:\\Users\\tonys\\AppData\\Local\\Programs\\Python\\Python39'
+
+PYTHON_PATH  <- 'C:\\Users\\admin_jhardi10\\AppData\\Local\\Programs\\Python\\Python39'
 PACKAGE_PATH <- 'c:/Users/tonys/Research/characterizationPaperPackage/'
 DB           <- private.data$db
 
 # You do not have to change the below [but you can]
-cdmDatabaseSchema    <- paste(DB, ".dbo", sep='')     # eg: "ohdsi_cumc_2021q1r2.dbo"
-cohortDatabaseSchema <- paste(DB, ".results", sep='') # eg: "ohdsi_cumc_2021q1r2.results"
-vocabularyDatabaseSchema <- cdmDatabaseSchema
-cohortTable <- "cohort_characterization"              # this is the name of the output table
+# cdmDatabaseSchema    <- paste(DB, ".dbo", sep='')     # eg: "ohdsi_cumc_2021q1r2.dbo"
+# cohortDatabaseSchema <- paste(DB, ".results", sep='') # eg: "ohdsi_cumc_2021q1r2.results"
+# vocabularyDatabaseSchema <- cdmDatabaseSchema
+cohortTable <- "testcharacterization"              # this is the name of the output table
+
+connectionSpecifications <- cdmSources %>%
+  dplyr::filter(sequence == 1) %>%
+  dplyr::filter(database == 'truven_ccae')
+
+dbms <- connectionSpecifications$dbms # example: 'redshift'
+port <- connectionSpecifications$port # example: 2234
+server <-
+  connectionSpecifications$server # example: 'fdsfd.yourdatabase.yourserver.com"
+cdmDatabaseSchema <-
+  connectionSpecifications$cdmDatabaseSchema # example: "cdm"
+vocabularyDatabaseSchema <-
+  connectionSpecifications$vocabDatabaseSchema # example: "vocabulary"
+databaseId <-
+  connectionSpecifications$database # example: "truven_ccae"
+userNameService = "redShiftUserName" # example: "this is key ring service that securely stores credentials"
+passwordService = "redShiftPassword" # example: "this is key ring service that securely stores credentials"
+
+cohortDatabaseSchema = paste0('scratch_', keyring::key_get(service = userNameService))
+# scratch - usually something like 'scratch_grao'
+
+connectionDetails <- DatabaseConnector::createConnectionDetails(
+  dbms = dbms,
+  user = keyring::key_get(service = userNameService),
+  password = keyring::key_get(service = passwordService),
+  port = port,
+  server = server
+)
+
+
 
 # Optional: specify where the temporary files will be created:
-options(andromedaTempFolder = file.path(path, "andromedaTemp"))
+options(andromedaTempFolder = "D:\\andromedaTemp")
+
 
 # Details for connecting to the server:
-connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = private.data$dbms,
-                                                                server = private.data$server,
-                                                                user = private.data$user,
-                                                                password = private.data$password,
-                                                                )
+# connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = private.data$dbms,
+#                                                                 server = private.data$server,
+#                                                                 user = private.data$user,
+#                                                                 password = private.data$password,
+#                                                                 )
 
 # For Oracle: define a schema that can be used to emulate temp tables:
 oracleTempSchema <- NULL
@@ -38,10 +71,11 @@ cohortsToCreate <- readr::read_csv(pathToCsv, col_types = readr::cols())
 
 # Delete table if it already exists, perhaps from a partial execution of the script.
 # Commented out, because new users likely won't already have this table.
-sql_part1 = "drop table "
-sql_part2 = paste(sql_part1, DB, sep='')
-sql_part3 = paste(sql_part2, ".results.", sep = '')
-sql       = paste(sql_part3, cohortTable, sep = '')
+sql = paste0('drop table ', cohortDatabaseSchema, '.', cohortTable, ';')
+
+# sql_part2 = paste(sql_part1, DB, sep='')
+# sql_part3 = paste(sql_part2, ".results.", sep = '')
+# sql       = paste(sql_part3, cohortTable, sep = '')
 
  DatabaseConnector::executeSql(
   connection = conn,
@@ -53,12 +87,12 @@ sql       = paste(sql_part3, cohortTable, sep = '')
   runAsBatch = FALSE
 )
 
-sql <- "CREATE TABLE ohdsi_cumc_2021q1r2.results.cohort_characterization (
+sql <- paste0('create table ', cohortDatabaseSchema, '.', cohortTable, '(
     cohort_definition_id int,
     subject_id int,
     cohort_start_date date,
     cohort_end_date date
-);"
+);')
 
 DatabaseConnector::executeSql(
   connection = conn,
@@ -72,6 +106,7 @@ DatabaseConnector::executeSql(
 
 for (i in 1:nrow(cohortsToCreate)) {
   # if (cohortsToCreate$name[i] > 2677) {
+  i = 1
   writeLines(paste("Creating cohort:", cohortsToCreate$name[i]))
   sql <- SqlRender::loadRenderTranslateSql(sqlFilename = paste0(cohortsToCreate$name[i], ".sql"),
                                            packageName = "characterizationPaperPackage",
