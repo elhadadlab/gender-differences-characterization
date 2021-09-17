@@ -3,3 +3,4 @@ output/created_files/*.pickle
 output/graphs/*.html
 output/summaries/ohdsi_cumc_2021q1r2/*.csv
 .Rproj.user/*
+.Rproj.user
