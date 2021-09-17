@@ -17,7 +17,7 @@ In order to run this package, you will need to:
     - In *inst/sql_server/sexdiff_cohort_reference_v5.sql*, change the 1st line to the name of your database [should match what you put into *empty_credentials.csv*]. Likewise, change line 155, line 166, and line 305.
     - In *inst/sql_server/all_condition_occurrence_summary.sql*, change the 1st line to the name of your database [again, should match what you put into *empty_credentials.csv*]. Likewise, change line 51.
 
-4. Open the R project in R studio (e.g. by double-clicking on the *.Rproj* file).
+4. Open the R project in R studio (e.g. by double-clicking on the *.Rproj* file). Under the "Build" tab, make sure to click "clean and rebuild the package". You should see the package properly install in the console window.
 
 5. Check *inst/settings/CohortsToCreateFinal.csv* to make sure it includes only those cohorts you are interested in. For now, let's stick to the ones already specified. The fields are:
 
