@@ -24,13 +24,13 @@ shell("rm extras/characterizationPaperPackage")
 shell("R CMD Rd2pdf ./ --output=extras/characterizationPaperPackage")
 
 
-# Insert cohort definitions from ATLAS into package -----------------------
-ROhdsiWebApi::insertCohortDefinitionSetInPackage(fileName = "inst/settings/CohortsToCreate.csv",
-                                                 baseUrl = Sys.getenv("ohdsiBaseUrl"),
-                                                 insertTableSql = TRUE,
-                                                 insertCohortCreationR = TRUE,
-                                                 generateStats = TRUE,
-                                                 packageName = "characterizationPaperPackage")
+# # Insert cohort definitions from ATLAS into package -----------------------
+# ROhdsiWebApi::insertCohortDefinitionSetInPackage(fileName = "inst/settings/CohortsToCreate.csv",
+#                                                  baseUrl = Sys.getenv("ohdsiBaseUrl"),
+#                                                  insertTableSql = TRUE,
+#                                                  insertCohortCreationR = TRUE,
+#                                                  generateStats = TRUE,
+#                                                  packageName = "characterizationPaperPackage")
 
 # Store environment in which the study was executed -----------------------
 OhdsiRTools::insertEnvironmentSnapshotInPackage("characterizationPaperPackage")

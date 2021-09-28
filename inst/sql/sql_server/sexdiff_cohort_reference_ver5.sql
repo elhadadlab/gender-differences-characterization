@@ -1,5 +1,6 @@
 -- change select statements to match Truven or CMS data
-use ohdsi_cumc_2021q1r2;
+-- use ohdsi_cumc_2021q1r2;
+use @cdm_database
 
 --for a set of cohorts
 --stratify by gender, look at differences in age and prior conditions
@@ -152,7 +153,7 @@ END
 -- differences in Microsoft SQL server 2017 vs PostGreSQL
 SELECT c1.COHORT_DEFINITION_ID, c1.SUBJECT_ID, c1.cohort_start_date, c1.cohort_end_date
 INTO #sexdiff_cohort
-FROM ohdsi_cumc_2021q1r2.results.cohort_characterization c1 -- created in the R script!
+FROM @cdm_database_schema.results.cohort_characterization c1 -- created in the R script!
 INNER JOIN #pbr_sexdiff_cohort_ref cr1 on c1.COHORT_DEFINITION_ID = cr1.cohort_definition_id
 
 -- select * from #sexdiff_cohort
@@ -163,7 +164,7 @@ DROP TABLE results.pbr_sexdiff_cohort_covarate_summary_v5
 END
 
 -- drop table results.pbr_sexdiff_cohort_covarate_summary_v5 --#pbr_sexdiff_cohort_covarate_summary;
-SELECT 'ohdsi_cumc_2021q1r2' as source_name, -- change to your DB name
+SELECT @source_name as source_name, -- change to your DB name
        cr1.cohort_definition_id as cohort_definition_id,
        cr1.cohort_definition_name as cohort_definition_name,
        c1.concept_id as concept_id,
@@ -302,7 +303,7 @@ from (select
     -- 8532 female
     -- 8507 male
 -- drop table results.pbr_sexdiff_cohort_ttonset_summary_v5 -- #pbr_sexdiff_cohort_ttonset_summary;
-select  'ohdsi_cumc_2021q1r2' as source_name
+select @source_name as source_name
     , a.*
     , b.num_males
     , b.avg_time_onset_males
