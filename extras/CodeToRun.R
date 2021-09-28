@@ -88,8 +88,8 @@ sql = paste0('drop table ', cohortDatabaseSchema, '.', cohortTable, ';')
 )
 
 sql <- paste0('create table ', cohortDatabaseSchema, '.', cohortTable, '(
-    cohort_definition_id int,
-    subject_id int,
+    cohort_definition_id bigint,
+    subject_id bigint,
     cohort_start_date date,
     cohort_end_date date
 );')
