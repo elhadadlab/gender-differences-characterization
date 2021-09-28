@@ -30,7 +30,7 @@ FROM
   FROM
   (
   -- Begin Condition Occurrence Criteria
-SELECT C.person_id, C.condition_occurrence_id as event_id, C.condition_start_date as start_date, COALESCE(C.condition_end_date, DATEADD(day,CAST(1 as int),C.condition_start_date)) as end_date,
+SELECT C.person_id, C.condition_occurrence_id as event_id, C.condition_start_date as start_date, COALESCE(C.condition_end_date, DATEADD(day,CAST(1 as bigint),C.condition_start_date)) as end_date,
   C.visit_occurrence_id, C.condition_start_date as sort_date
 FROM
 (
@@ -44,7 +44,7 @@ WHERE C.ordinal = 1
 
   ) E
 	JOIN @cdm_database_schema.observation_period OP on E.person_id = OP.person_id and E.start_date >=  OP.observation_period_start_date and E.start_date <= op.observation_period_end_date
-  WHERE DATEADD(day,CAST(1095 as int),OP.OBSERVATION_PERIOD_START_DATE) <= E.START_DATE AND DATEADD(day,CAST(0 as int),E.START_DATE) <= OP.OBSERVATION_PERIOD_END_DATE
+  WHERE DATEADD(day,CAST(1095 as bigint),OP.OBSERVATION_PERIOD_START_DATE) <= E.START_DATE AND DATEADD(day,CAST(0 as bigint),E.START_DATE) <= OP.OBSERVATION_PERIOD_END_DATE
 ) P
 WHERE P.ordinal = 1
 -- End Primary Events
@@ -164,7 +164,7 @@ AS
 (
 	SELECT
 		person_id
-		, DATEADD(day,CAST(-1 * 0 as int),event_date)  as end_date
+		, DATEADD(day,CAST(-1 * 0 as bigint),event_date)  as end_date
 	FROM
 	(
 		SELECT
@@ -187,7 +187,7 @@ AS
 
 			SELECT
 				person_id
-				, DATEADD(day,CAST(0 as int),end_date) as end_date
+				, DATEADD(day,CAST(0 as bigint),end_date) as end_date
 				, 1 AS event_type
 				, NULL
 			FROM #cohort_rows
