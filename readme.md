@@ -14,8 +14,8 @@ In order to run this package, you will need to:
     - In *inst/py/settings.py* change line 10 [the `PATH` variable] to the `PATH` for the *characterizationPaperPackage's* *inst/py/* folder.
     - In *inst/py/settings.py* change line 20 [the `credentials` variable's `read_csv`] to the filepath for *empty_credentials.csv*
     - Fill in the various parameters at the top of *extras/CodeToRun.R*.  Specifically, the `PATH` to the credentials file, the system Python path [e.g. to the Anaconda installation or Python 3.9 installation with the various installed Python packages], etc.
-    - In *inst/sql_server/sexdiff_cohort_reference_v5.sql*, change the 1st line to the name of your database [should match what you put into *empty_credentials.csv*]. Likewise, change line 155, line 166, and line 305.
-    - In *inst/sql_server/all_condition_occurrence_summary.sql*, change the 1st line to the name of your database [again, should match what you put into *empty_credentials.csv*]. Likewise, change line 51.
+    - *inst/sql_server/sexdiff_cohort_reference_v5.sql* takes in parameters from *CodeToRun.R*; it should match the name of the database in *empty_credentials.csv*
+    - *inst/sql_server/all_condition_occurrence_summary.sql* takes in parameters from *CodeToRun.R*; it should match the name of the database in *empty_credentials.csv*
 
 4. Open the R project in R studio (e.g. by double-clicking on the *.Rproj* file). Under the "Build" tab, make sure to click "clean and rebuild the package". You should see the package properly install in the console window.
 

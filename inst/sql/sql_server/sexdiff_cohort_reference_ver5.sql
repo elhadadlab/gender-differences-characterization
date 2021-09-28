@@ -153,7 +153,7 @@ END
 -- differences in Microsoft SQL server 2017 vs PostGreSQL
 SELECT c1.COHORT_DEFINITION_ID, c1.SUBJECT_ID, c1.cohort_start_date, c1.cohort_end_date
 INTO #sexdiff_cohort
-FROM @cdm_database_schema.results.cohort_characterization c1 -- created in the R script!
+FROM @cdm_database.results.cohort_characterization c1 -- created in the R script!
 INNER JOIN #pbr_sexdiff_cohort_ref cr1 on c1.COHORT_DEFINITION_ID = cr1.cohort_definition_id
 
 -- select * from #sexdiff_cohort
