@@ -8,10 +8,10 @@ import numpy as np
 import glob
 import sys
 
-from settings import *
+from settings_redshift import *
 
 # Create the connection
-conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+db+';UID='+user+';PWD='+ password)
+conn = pyodbc.connect('Driver={Amazon Redshift (x64)};Server='+server+';Database='+db+';UID='+user+';PWD='+password+';Port='+port)
 
 per_patient_TTD_dict = {}
 per_patient_TTD_dict[db] = {}

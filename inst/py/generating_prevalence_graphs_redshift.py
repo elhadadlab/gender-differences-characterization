@@ -22,10 +22,10 @@ import tqdm
 import pickle
 import glob
 
-from settings import *
+from settings_redshift import *
 
 # Create the connection
-conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+db+';UID='+user+';PWD='+ password)
+conn = pyodbc.connect('Driver={Amazon Redshift (x64)};Server='+server+';Database='+db+';UID='+user+';PWD='+password+';Port='+port)
 
 sql_query_string = 'select * from ' + db + '.results.pbr_sex_diff_summary'
 all_conds_df = pandas.io.sql.read_sql(sql_query_string, conn)

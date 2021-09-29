@@ -9,7 +9,7 @@ from collections import defaultdict
 import pickle
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-from settings import *
+from settings_redshift import *
 
 import glob
 
@@ -31,14 +31,14 @@ cohort = []
 for summary_file in tqdm.tqdm(glob.glob(summary_fp + '*.csv')):
     cohort_id = summary_file.split('\\')[-1].split('_')[0]
     # created.append(cohort_id)
-    
+
     summary = pd.read_csv(summary_file)
-    
+
     for x in zip([x for x in summary.condition_concept_id.values], [x for x in summary.concept_name.values]):
         concept_id_mapper[x[0]] = x[1]
-    
+
     cohort.append(cohort_id)
-    
+
     document_female = ''
     document_male   = ''
 

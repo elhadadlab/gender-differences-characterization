@@ -7,11 +7,11 @@ import glob
 import sys
 import os
 
-from settings import *
+from settings_redshift import *
 
 print('Creating summaries...')
 # Create the connection
-conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+db+';UID='+user+';PWD='+ password)
+conn = pyodbc.connect('Driver={Amazon Redshift (x64)};Server='+server+';Database='+db+';UID='+user+';PWD='+password+';Port='+port)
 
 # What cohorts to create
 cohort_files = pd.read_csv('../settings/CohortsToCreateFinal.csv')

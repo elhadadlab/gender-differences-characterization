@@ -148,11 +148,22 @@ use_python(PYTHON_PATH) # Python interpreter specified in parameters
 # If it does throw the rpytools error, it's just a runtime error that doesn't actually
 # Inhibit the scripts.
 sys <- import("sys", convert = TRUE) # Fixes run-time warning and error?
-py_run_file('inst/py/settings.py')
-py_run_file('creating_summaries.py')
-py_run_file('tfidf_vectorizer.py')
-py_run_file('generating_prevalence_graphs.py')
-py_run_file('diagnostic_delay.py') 
+
+if (attr(conn, "dbms") == "sql server") {
+  py_run_file('inst/py/settings_sqlserver.py')
+  py_run_file('creating_summaries_sqlserver.py')
+  py_run_file('tfidf_vectorizer_sqlserver.py')
+  py_run_file('generating_prevalence_graphs_sqlserver.py')
+  py_run_file('diagnostic_delay_sqlserver.py') 
+} else if (attr(conn, "dbms") == "redshift") {
+  # If the first run throws a "ModuleNotFoundError: No module named 'rpytools.py',
+  # on the settings file, just rerun the chunk again and it should run [it's a known issue]
+  py_run_file('inst/py/settings_redshift.py')  
+  py_run_file('creating_summaries_redshift.py')
+  py_run_file('tfidf_vectorizer_redshift.py')
+  py_run_file('generating_prevalence_graphs_redshift.py')
+  py_run_file('diagnostic_delay_redshift.py') 
+}
 
 disconnect(connection = conn)
 
