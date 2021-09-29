@@ -1,5 +1,5 @@
 -- change select statements to match Truven or CMS data
-use ohdsi_cumc_2021q1r2;
+use @cdm_database
 
 --for a set of cohorts
 --stratify by gender, look at differences in age and prior conditions
@@ -48,7 +48,7 @@ insert into results.pbr_sex_diff_summary (source_name, concept_id, concept_name,
 --     'q3_female', 'q3_male',
 --     'median_female', 'median_male';
 
-select 'cumc' as source_name, -- change to your database name
+select CAST(@source_name AS varchar) as source_name, -- change to your database name
     c1.concept_id,
     c1.concept_name,
     t2.num_persons,

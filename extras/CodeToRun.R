@@ -2,10 +2,10 @@
 library(characterizationPaperPackage)
 
 # Parameters [loaded from credentials.csv, which is not uploaded to Github!]
-#CREDENTIALS  <- 'C:\\Users\\tonys\\Documents\\Research\\csv\\credentials.csv' # login credentials
+# CREDENTIALS  <- 'C:\\Users\\tonys\\Documents\\Research\\csv\\credentials.csv' # login credentials
 private.data = read.csv(CREDENTIALS, fileEncoding = 'UTF-8-BOM')
 
-#PYTHON_PATH  <- 'C:\\Users\\tonys\\AppData\\Local\\Programs\\Python\\Python39'
+# PYTHON_PATH  <- 'C:\\Users\\tonys\\AppData\\Local\\Programs\\Python\\Python39'
 
 PYTHON_PATH  <- 'C:\\Users\\admin_jhardi10\\AppData\\Local\\Programs\\Python\\Python39'
 PACKAGE_PATH <- 'c:/Users/tonys/Research/characterizationPaperPackage/'
@@ -52,6 +52,7 @@ options(andromedaTempFolder = "D:\\andromedaTemp")
 
 
 # Details for connecting to the server:
+
 # connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = private.data$dbms,
 #                                                                 server = private.data$server,
 #                                                                 user = private.data$user,
@@ -106,7 +107,6 @@ DatabaseConnector::executeSql(
 
 for (i in 1:nrow(cohortsToCreate)) {
   # if (cohortsToCreate$name[i] > 2677) {
-  i = 1
   writeLines(paste("Creating cohort:", cohortsToCreate$name[i]))
   sql <- SqlRender::loadRenderTranslateSql(sqlFilename = paste0(cohortsToCreate$name[i], ".sql"),
                                            packageName = "characterizationPaperPackage",
@@ -124,7 +124,9 @@ for (i in 1:nrow(cohortsToCreate)) {
 # Run processing for all_condition_occurrence_summary.sql script
 sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "all_condition_occurrence_summary.sql",
                                          packageName = "characterizationPaperPackage",
-                                         dbms = attr(conn, "dbms"))
+                                         dbms = attr(conn, "dbms"),
+                                         cdm_database = "ohdsi_cumc_2021q1r2",  # This will need to change to your DB name
+                                         source_name = "'ohdsi_cumc_2021q1r2'") # Note the additional ''s.
 
 DatabaseConnector::executeSql(conn, sql)
 
@@ -132,7 +134,9 @@ DatabaseConnector::executeSql(conn, sql)
 # Run processing sexdiff_cohort_reference_ver5.sql script
 sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "sexdiff_cohort_reference_ver5.sql",
                                          packageName = "characterizationPaperPackage",
-                                         dbms = attr(conn, "dbms"))
+                                         dbms = attr(conn, "dbms"),
+                                         cdm_database = "ohdsi_cumc_2021q1r2",
+                                         source_name = "'ohdsi_cumc_2021q1r2'")
 
 DatabaseConnector::executeSql(conn, sql)
 

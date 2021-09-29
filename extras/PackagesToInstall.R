@@ -10,7 +10,7 @@ install.packages("devtools")
 install.packages("rlang")
 install.packages("reticulate")
 install.packages('Rcpp')
-devtools::install_github("ROhdsiWebApi")
+# devtools::install_github("ROhdsiWebApi")
 devtools::install_github("CohortDiagnostics")
 
 install.packages("drat")
