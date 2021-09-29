@@ -2,21 +2,10 @@ DBMS:
 redshift
 
 Error:
-java.sql.SQLException: [Amazon](500310) Invalid operation: Value out of range for 4 bytes. 
-Details: -----------------------------------------------
-  error:  Value out of range for 4 bytes.
-  code:      8001
-  context:   Input:2147697205.
-  query:     12665831
-  location:  numeric_bound.cpp:61
-  process:   query1_350_12665831 [pid=24163]
-  -----------------------------------------------;
+java.sql.SQLException: [Amazon](500310) Invalid operation: schema "ohdsi_cumc_2021q1r2" does not exist;
 
 SQL:
-INSERT INTO scratch_jhardi10.testcharacterization (cohort_definition_id, subject_id, cohort_start_date, cohort_end_date)
-select 11111 as cohort_definition_id, person_id, start_date, end_date
-FROM #final_cohort CO
-
+SET search_path TO ohdsi_cumc_2021q1r2
 
 R version:
 R version 4.1.0 (2021-05-18)
