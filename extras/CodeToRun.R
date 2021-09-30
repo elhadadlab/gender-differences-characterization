@@ -122,7 +122,7 @@ for (i in 1:nrow(cohortsToCreate)) {
 }
 
 # Change the below line to reflect where results can be saved. I'm assuming you're saving to cohortDatabaseSchema
-results_database_schema = cohortDatabaseSchema # e.g. scratch_jhard10
+results_database_schema = cohortDatabaseSchema # e.g. scratch_jhardi10
 
 # Run processing for all_condition_occurrence_summary.sql script
 sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "all_condition_occurrence_summary.sql",
