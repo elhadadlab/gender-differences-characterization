@@ -15,37 +15,7 @@ DB           <- private.data$db
 cdmDatabaseSchema    <- paste(DB, ".dbo", sep='')     # eg: "ohdsi_cumc_2021q1r2.dbo"
 cohortDatabaseSchema <- paste(DB, ".results", sep='') # eg: "ohdsi_cumc_2021q1r2.results"
 vocabularyDatabaseSchema <- cdmDatabaseSchema
-cohortTable <- "testcharacterization"              # this is the name of the output table
-
-# connectionSpecifications <- cdmSources %>%
-#   dplyr::filter(sequence == 1) %>%
-#   dplyr::filter(database == 'truven_ccae')
-# 
-# dbms <- connectionSpecifications$dbms # example: 'redshift'
-# port <- connectionSpecifications$port # example: 2234
-# server <-
-#   connectionSpecifications$server # example: 'fdsfd.yourdatabase.yourserver.com"
-# cdmDatabaseSchema <-
-#   connectionSpecifications$cdmDatabaseSchema # example: "cdm"
-# vocabularyDatabaseSchema <-
-#   connectionSpecifications$vocabDatabaseSchema # example: "vocabulary"
-# databaseId <-
-#   connectionSpecifications$database # example: "truven_ccae"
-# userNameService = "redShiftUserName" # example: "this is key ring service that securely stores credentials"
-# passwordService = "redShiftPassword" # example: "this is key ring service that securely stores credentials"
-# 
-# cohortDatabaseSchema = paste0('scratch_', keyring::key_get(service = userNameService))
-# # scratch - usually something like 'scratch_grao'
-# 
-# connectionDetails <- DatabaseConnector::createConnectionDetails(
-#   dbms = dbms,
-#   user = keyring::key_get(service = userNameService),
-#   password = keyring::key_get(service = passwordService),
-#   port = port,
-#   server = server
-# )
-
-
+cohortTable <- "cohort_characterization"              # this is the name of the output table for the cohorts
 
 # Optional: specify where the temporary files will be created:
 options(andromedaTempFolder = "D:\\andromedaTemp")
@@ -72,11 +42,7 @@ cohortsToCreate <- readr::read_csv(pathToCsv, col_types = readr::cols())
 
 # Delete table if it already exists, perhaps from a partial execution of the script.
 # Commented out, because new users likely won't already have this table.
-sql = paste0('drop table ', cohortDatabaseSchema, '.', cohortTable, ';')
-
-# sql_part2 = paste(sql_part1, DB, sep='')
-# sql_part3 = paste(sql_part2, ".results.", sep = '')
-# sql       = paste(sql_part3, cohortTable, sep = '')
+# sql = paste0('drop table ', cohortDatabaseSchema, '.', cohortTable, ';')
 
 DatabaseConnector::executeSql(
   connection = conn,
@@ -121,12 +87,16 @@ for (i in 1:nrow(cohortsToCreate)) {
   DatabaseConnector::executeSql(conn, sql) #}
 }
 
+results_database_schema = "results"
+
 # Run processing for all_condition_occurrence_summary.sql script
 sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "all_condition_occurrence_summary.sql",
                                          packageName = "characterizationPaperPackage",
                                          dbms = attr(conn, "dbms"),
-                                         cdm_database = "ohdsi_cumc_2021q1r2",
-                                         source_name = "'ohdsi_cumc_2021q1r2'") # Note the additional ''s.
+                                         cdm_database = "ohdsi_cumc_2021q1r2",  # This will need to change to your DB name
+                                         source_name = "'ohdsi_cumc_2021q1r2'", # Note the additional ''s.
+                                         results_database_schema = results_database_schema,   # e.g. for me, I save to results
+                                         results_sex_diff_summary = "sex_diff_summary") 
 
 DatabaseConnector::executeSql(conn, sql)
 
@@ -136,9 +106,18 @@ sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "sexdiff_cohort_reference
                                          packageName = "characterizationPaperPackage",
                                          dbms = attr(conn, "dbms"),
                                          cdm_database = "ohdsi_cumc_2021q1r2",
-                                         source_name = "'ohdsi_cumc_2021q1r2'")
+                                         source_name = "'ohdsi_cumc_2021q1r2'",
+                                         results_database_schema = results_database_schema,
+                                         target_cohort_table = cohortTable,
+                                         sexdiff_cohort_covarate_summary_v5 = "sexdiff_cohort_covarate_summary_v5",
+                                         sexdiff_cohort_ttonset_v5 = "sexdiff_cohort_ttonset_v5",
+                                         sexdiff_cohort_ttonset_summary_v5 = "sexdiff_cohort_ttonset_summary_v5")
 
 DatabaseConnector::executeSql(conn, sql)
+
+# Save table FP to file, so it can be parsed in Python.
+tablepaths <- c(results_database_schema, cohortTable)
+write.table(tablepaths, 'tablepaths.txt', sep = ",", row.names=FALSE, col.names=FALSE)
 
 # Begin Python processing and output generation
 # settings.py changes the os working directory [to allow relative paths]
@@ -146,8 +125,11 @@ DatabaseConnector::executeSql(conn, sql)
 use_python(PYTHON_PATH) # Python interpreter specified in parameters
 # https://community.rstudio.com/t/rpytools-error-recurring-with-package-reticulate/66625
 # If it does throw the rpytools error, it's just a runtime error that doesn't actually
-# Inhibit the scripts.
+# Inhibit the scripts. Just run the same lines twice and it fixes it...
 sys <- import("sys", convert = TRUE) # Fixes run-time warning and error?
+sys <- import("sys", convert = TRUE) # Fixes run-time warning and error?
+
+# py_run_file('testing_imports.py')
 
 if (attr(conn, "dbms") == "sql server") {
   py_run_file('inst/py/settings_sqlserver.py')

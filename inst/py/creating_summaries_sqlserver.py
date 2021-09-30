@@ -26,7 +26,7 @@ for cohort_file_id in tqdm(cohort_files.cohortId):
     if os.path.exists('../../output/summaries/' + db + '/' + str(cohort_file_id) + '_summary.csv'):
         continue;
 
-    sql_query_string = 'select * from ' + db + '.results.pbr_sexdiff_cohort_ttonset_v5 where cohort_definition_id = '
+    sql_query_string = 'select * from ' + sexdiff_cohort_ttonset_v5_tablepath + ' where cohort_definition_id = '
     df = pandas.io.sql.read_sql(sql_query_string + str(cohort_file_id), conn)
     # print(cohort_file_id, len(df))
 

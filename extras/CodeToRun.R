@@ -121,12 +121,17 @@ for (i in 1:nrow(cohortsToCreate)) {
   DatabaseConnector::executeSql(conn, sql) #}
 }
 
+# Change the below line to reflect where results can be saved. I'm assuming you're saving to cohortDatabaseSchema
+results_database_schema = cohortDatabaseSchema # e.g. scratch_jhard10
+
 # Run processing for all_condition_occurrence_summary.sql script
 sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "all_condition_occurrence_summary.sql",
                                          packageName = "characterizationPaperPackage",
                                          dbms = attr(conn, "dbms"),
                                          cdm_database = "ohdsi_cumc_2021q1r2",  # This will need to change to your DB name
-                                         source_name = "'ohdsi_cumc_2021q1r2'") # Note the additional ''s.
+                                         source_name = "'ohdsi_cumc_2021q1r2'", # Note the additional ''s.
+                                         results_database_schema = results_database_schema,   # e.g. for me, I save to results
+                                         results_sex_diff_summary = "sex_diff_summary") 
 
 DatabaseConnector::executeSql(conn, sql)
 
@@ -136,9 +141,18 @@ sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "sexdiff_cohort_reference
                                          packageName = "characterizationPaperPackage",
                                          dbms = attr(conn, "dbms"),
                                          cdm_database = "ohdsi_cumc_2021q1r2",
-                                         source_name = "'ohdsi_cumc_2021q1r2'")
+                                         source_name = "'ohdsi_cumc_2021q1r2'",
+                                         results_database_schema = results_database_schema,
+                                         target_cohort_table = cohortTable,
+                                         sexdiff_cohort_covarate_summary_v5 = "sexdiff_cohort_covarate_summary_v5",
+                                         sexdiff_cohort_ttonset_v5 = "sexdiff_cohort_ttonset_v5",
+                                         sexdiff_cohort_ttonset_summary_v5 = "sexdiff_cohort_ttonset_summary_v5")
 
 DatabaseConnector::executeSql(conn, sql)
+
+# Save table FP to file, so it can be parsed in Python.
+tablepaths <- c(results_database_schema, cohortTable)
+write.table(tablepaths, 'tablepaths.txt', sep = ",", row.names=FALSE, col.names=FALSE)
 
 # Begin Python processing and output generation
 # settings.py changes the os working directory [to allow relative paths]
@@ -146,7 +160,8 @@ DatabaseConnector::executeSql(conn, sql)
 use_python(PYTHON_PATH) # Python interpreter specified in parameters
 # https://community.rstudio.com/t/rpytools-error-recurring-with-package-reticulate/66625
 # If it does throw the rpytools error, it's just a runtime error that doesn't actually
-# Inhibit the scripts.
+# Inhibit the scripts. Just run the same lines twice and it fixes it...
+sys <- import("sys", convert = TRUE) # Fixes run-time warning and error?
 sys <- import("sys", convert = TRUE) # Fixes run-time warning and error?
 
 if (attr(conn, "dbms") == "sql server") {

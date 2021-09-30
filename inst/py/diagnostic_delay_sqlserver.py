@@ -33,7 +33,7 @@ with open('../csv/exclude_concepts_all_final.csv', 'r') as handle:
 
 for summary_file in tqdm.tqdm(glob.glob(summary_fp + '*')):
     cohort_file_id = summary_file.split('\\')[-1].split('_')[0]
-    sql_query_string = 'select * from ' + db + '.results.pbr_sexdiff_cohort_ttonset_v5 where cohort_definition_id = '
+    sql_query_string = 'select * from ' + sexdiff_cohort_ttonset_v5_tablepath + ' where cohort_definition_id = '
     df = pandas.io.sql.read_sql(sql_query_string + str(cohort_file_id), conn)
     cohort_id = str(cohort_file_id)
 

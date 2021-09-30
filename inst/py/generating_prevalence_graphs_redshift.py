@@ -27,7 +27,7 @@ from settings_redshift import *
 # Create the connection
 conn = pyodbc.connect('Driver={Amazon Redshift (x64)};Server='+server+';Database='+db+';UID='+user+';PWD='+password+';Port='+port)
 
-sql_query_string = 'select * from ' + db + '.results.pbr_sex_diff_summary'
+sql_query_string = 'select * from ' + sex_diff_summary_tablepath # db + '.results.sex_diff_summary'
 all_conds_df = pandas.io.sql.read_sql(sql_query_string, conn)
 
 # sys.getsizeof(all_conds_df)

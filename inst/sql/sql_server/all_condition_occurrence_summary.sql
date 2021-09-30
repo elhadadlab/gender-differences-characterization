@@ -3,12 +3,12 @@ use @cdm_database
 
 --for a set of cohorts
 --stratify by gender, look at differences in age and prior conditions
-IF OBJECT_ID(N'results.pbr_sex_diff_summary') IS NOT NULL
-BEGIN
-DROP TABLE results.pbr_sex_diff_summary
-END
+--IF OBJECT_ID(N'results.pbr_sex_diff_summary') IS NOT NULL
+--BEGIN
+--DROP TABLE results.pbr_sex_diff_summary
+--END
 
-create table results.pbr_sex_diff_summary
+create table @cdm_database.@results_database_schema.@results_sex_diff_summary -- previously results.pbr_sex_diff_summary [ohdsi_cumc_2021q1r2.results.pbr_sex_diff_summary]
 (
       source_name varchar(255),
       concept_id bigint,
@@ -39,7 +39,7 @@ create table results.pbr_sex_diff_summary
 --try to make it incident events with people who have been observed > 1yr
 --concept-level summary
 -- concept, prevalence, % female, age, age for female, age difference
-insert into results.pbr_sex_diff_summary (source_name, concept_id, concept_name, num_persons, prev_overall, num_female, prev_female,
+insert into @cdm_database.@results_database_schema.@results_sex_diff_summary (source_name, concept_id, concept_name, num_persons, prev_overall, num_female, prev_female,
                                    num_male, prev_male, rr_female, pct_female, avg_age, avg_age_female, avg_age_male, avg_age_diff,
                                    std_dev_age, std_dev_age_female, std_dev_age_male, min_age, min_age_female, min_age_male,
                                    max_age, max_age_female, max_age_male)
