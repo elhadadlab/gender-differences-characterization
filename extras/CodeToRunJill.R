@@ -121,17 +121,13 @@ for (i in 1:nrow(cohortsToCreate)) {
   DatabaseConnector::executeSql(conn, sql) #}
 }
 
-# Change the below line to reflect where results can be saved. I'm assuming you're saving to cohortDatabaseSchema
-results_database_schema = cohortDatabaseSchema # e.g. scratch_jhardi10
-
 # Run processing for all_condition_occurrence_summary.sql script
 sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "all_condition_occurrence_summary.sql",
                                          packageName = "characterizationPaperPackage",
                                          dbms = attr(conn, "dbms"),
                                          cdm_database = cdmDatabaseSchema,  # This will need to change to your DB name
-                                         source_name = paste0("'", cdmDatabaseSchema,"'"), # Note the additional ''s.
-                                         results_database_schema = results_database_schema,   # e.g. for me, I save to results
-                                         results_sex_diff_summary = "sex_diff_summary") 
+                                         source_name = paste0(cdmDatabaseSchema, collapse = "'")) # Note the additional ''s.
+
 
 DatabaseConnector::executeSql(conn, sql)
 
@@ -141,18 +137,9 @@ sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "sexdiff_cohort_reference
                                          packageName = "characterizationPaperPackage",
                                          dbms = attr(conn, "dbms"),
                                          cdm_database = "ohdsi_cumc_2021q1r2",
-                                         source_name = "'ohdsi_cumc_2021q1r2'",
-                                         results_database_schema = results_database_schema,
-                                         target_cohort_table = cohortTable,
-                                         sexdiff_cohort_covarate_summary_v5 = "sexdiff_cohort_covarate_summary_v5",
-                                         sexdiff_cohort_ttonset_v5 = "sexdiff_cohort_ttonset_v5",
-                                         sexdiff_cohort_ttonset_summary_v5 = "sexdiff_cohort_ttonset_summary_v5")
+                                         source_name = "'ohdsi_cumc_2021q1r2'")
 
 DatabaseConnector::executeSql(conn, sql)
-
-# Save table FP to file, so it can be parsed in Python.
-tablepaths <- c(results_database_schema, cohortTable)
-write.table(tablepaths, 'tablepaths.txt', sep = ",", row.names=FALSE, col.names=FALSE)
 
 # Begin Python processing and output generation
 # settings.py changes the os working directory [to allow relative paths]
@@ -160,25 +147,13 @@ write.table(tablepaths, 'tablepaths.txt', sep = ",", row.names=FALSE, col.names=
 use_python(PYTHON_PATH) # Python interpreter specified in parameters
 # https://community.rstudio.com/t/rpytools-error-recurring-with-package-reticulate/66625
 # If it does throw the rpytools error, it's just a runtime error that doesn't actually
-# Inhibit the scripts. Just run the same lines twice and it fixes it...
+# Inhibit the scripts.
 sys <- import("sys", convert = TRUE) # Fixes run-time warning and error?
-sys <- import("sys", convert = TRUE) # Fixes run-time warning and error?
-
-if (attr(conn, "dbms") == "sql server") {
-  py_run_file('inst/py/settings_sqlserver.py')
-  py_run_file('creating_summaries_sqlserver.py')
-  py_run_file('tfidf_vectorizer_sqlserver.py')
-  py_run_file('generating_prevalence_graphs_sqlserver.py')
-  py_run_file('diagnostic_delay_sqlserver.py') 
-} else if (attr(conn, "dbms") == "redshift") {
-  # If the first run throws a "ModuleNotFoundError: No module named 'rpytools.py',
-  # on the settings file, just rerun the chunk again and it should run [it's a known issue]
-  py_run_file('inst/py/settings_redshift.py')  
-  py_run_file('creating_summaries_redshift.py')
-  py_run_file('tfidf_vectorizer_redshift.py')
-  py_run_file('generating_prevalence_graphs_redshift.py')
-  py_run_file('diagnostic_delay_redshift.py') 
-}
+py_run_file('inst/py/settings.py')
+py_run_file('creating_summaries.py')
+py_run_file('tfidf_vectorizer.py')
+py_run_file('generating_prevalence_graphs.py')
+py_run_file('diagnostic_delay.py') 
 
 disconnect(connection = conn)
 

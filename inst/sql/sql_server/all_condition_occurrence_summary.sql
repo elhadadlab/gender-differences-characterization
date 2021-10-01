@@ -1,5 +1,5 @@
 -- change select statements to match Truven or CMS data
-use @cdm_database
+--use @cdm_database ;
 
 --for a set of cohorts
 --stratify by gender, look at differences in age and prior conditions
@@ -8,7 +8,8 @@ use @cdm_database
 --DROP TABLE results.pbr_sex_diff_summary
 --END
 
-create table @cdm_database.@results_database_schema.@results_sex_diff_summary -- previously results.pbr_sex_diff_summary [ohdsi_cumc_2021q1r2.results.pbr_sex_diff_summary]
+--create table @cdm_database.@results_database_schema.@results_sex_diff_summary -- previously results.pbr_sex_diff_summary [ohdsi_cumc_2021q1r2.results.pbr_sex_diff_summary]
+create table @results_database_schema.@results_sex_diff_summary 
 (
       source_name varchar(255),
       concept_id bigint,
@@ -39,7 +40,9 @@ create table @cdm_database.@results_database_schema.@results_sex_diff_summary --
 --try to make it incident events with people who have been observed > 1yr
 --concept-level summary
 -- concept, prevalence, % female, age, age for female, age difference
-insert into @cdm_database.@results_database_schema.@results_sex_diff_summary (source_name, concept_id, concept_name, num_persons, prev_overall, num_female, prev_female,
+--insert into @cdm_database.@results_database_schema.@results_sex_diff_summary (source_name, concept_id, concept_name, num_persons, prev_overall, num_female, prev_female,
+insert into @results_database_schema.@results_sex_diff_summary (source_name, concept_id, concept_name, num_persons, prev_overall, num_female, prev_female,
+
                                    num_male, prev_male, rr_female, pct_female, avg_age, avg_age_female, avg_age_male, avg_age_diff,
                                    std_dev_age, std_dev_age_female, std_dev_age_male, min_age, min_age_female, min_age_male,
                                    max_age, max_age_female, max_age_male)
@@ -93,15 +96,15 @@ select t1.condition_concept_id, count(t1.person_id) as num_persons,
     max(case when p1.gender_concept_id = 8507 then 1.0*year(t1.index_date) - p1.year_of_birth else null end) as max_age_male
 from
   (select condition_concept_id, cp1.person_id, min(condition_start_date) as index_date
-  from dbo.condition_occurrence as cp1
-  left join dbo.person p1
+  from @cdm_database.condition_occurrence as cp1
+  left join @cdm_database.person p1
   on cp1.person_id = p1.person_id
   where cp1.CONDITION_START_DATE between '2010-01-01' and '2020-12-31' -- holdover from CCAE data at CUMC was only between 2008-01-01 and 2017-12-31
   group by condition_concept_id, cp1.person_id
   ) t1
 inner join (select p1.person_id, p1.gender_concept_id, p1.year_of_birth, min(op1.observation_period_start_date) as index_date
-from dbo.observation_period op1
-  inner join dbo.person p1
+from @cdm_database.observation_period op1
+  inner join @cdm_database.person p1
   on op1.person_id = p1.person_id
 where datediff(dd, op1.observation_period_start_date, op1.observation_period_end_date) > 365
 group by p1.person_id, p1.gender_concept_id, p1.year_of_birth
@@ -111,7 +114,7 @@ and t1.index_date >= dateadd(dd,365,p1.index_date)
 -- where datediff(dd, t1.index_date, p1.year_of_birth) > 4744
 group by t1.condition_concept_id
 ) t2
-inner join dbo.concept c1
+inner join @cdm_database.concept c1
 on t2.condition_concept_id = c1.concept_id,
 (
 select count(person_id) as num_persons,
@@ -120,8 +123,8 @@ select count(person_id) as num_persons,
   sum(case when gender_concept_id = 8507 then 1 else 0 end) as num_male,
   1.0*sum(case when gender_concept_id = 8507 then 1 else 0 end)/count(person_id) as pct_male
 from (select p1.person_id, p1.gender_concept_id, p1.year_of_birth, min(op1.observation_period_start_date) as index_date
-from dbo.observation_period op1
-  inner join dbo.person p1
+from @cdm_database.observation_period op1
+  inner join @cdm_database.person p1
   on op1.person_id = p1.person_id
 where datediff(dd, op1.observation_period_start_date, op1.observation_period_end_date) > 365
 group by p1.person_id, p1.gender_concept_id, p1.year_of_birth) p0
