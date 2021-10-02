@@ -1,6 +1,6 @@
 -- change select statements to match Truven or CMS data
 -- use ohdsi_cumc_2021q1r2;
-use @cdm_database
+-- use @cdm_database
 
 --for a set of cohorts
 --stratify by gender, look at differences in age and prior conditions
@@ -153,7 +153,7 @@ insert into #sexdiff_cohort_ref (cohort_definition_id, cohort_definition_name) v
 -- differences in Microsoft SQL server 2017 vs PostGreSQL
 SELECT c1.COHORT_DEFINITION_ID, c1.SUBJECT_ID, c1.cohort_start_date, c1.cohort_end_date
 INTO #sexdiff_cohort
-FROM @cdm_database.@results_database_schema.@target_cohort_table c1 -- FROM @cdm_database.results.cohort_characterization c1 -- created in the R script!
+FROM @results_database_schema.@target_cohort_table c1 -- FROM @cdm_database.results.cohort_characterization c1 -- created in the R script!
 INNER JOIN #sexdiff_cohort_ref cr1 on c1.COHORT_DEFINITION_ID = cr1.cohort_definition_id
 
 -- select * from #sexdiff_cohort
@@ -182,7 +182,7 @@ SELECT @source_name as source_name, -- change to your DB name
        --t3.avg_age_male as avg_age_male,
        --t3.avg_age_female as avg_age_female,
        --t3.avg_age_diff as avg_age_diff
-INTO @cdm_database.@results_database_schema.@sexdiff_cohort_covarate_summary_v5 --results.sexdiff_cohort_covarate_summary_v5 -- #sexdiff_cohort_covarate_summary
+INTO @results_database_schema.@sexdiff_cohort_covarate_summary_v5 --results.sexdiff_cohort_covarate_summary_v5 -- #sexdiff_cohort_covarate_summary
 FROM
   (
   select t2.cohort_definition_id,
@@ -214,7 +214,7 @@ FROM
           inner join person p1
           on sc1.subject_id = p1.person_id
       ) t1
-    inner join dbo.condition_occurrence co1
+    inner join @cdm_database.condition_occurrence co1
     on t1.person_id = co1.person_id
     and co1.condition_start_date >= dateadd(dd,-1095,t1.cohort_start_date)
     and co1.condition_start_Date < t1.cohort_start_date
@@ -229,7 +229,7 @@ FROM
         gender_concept_id,
         count(person_id) as num_persons
       from #sexdiff_cohort sc1
-      inner join dbo.person p1
+      inner join @cdm_database.person p1
       on sc1.subject_id = p1.person_id
       group by sc1.cohort_definition_id,
         gender_concept_id
@@ -271,7 +271,7 @@ select
   , a.condition_start_date
   , a.time_to_onset
   , (1.0*year(a.condition_start_date) - h5.year_of_birth) as age
-INTO @cdm_database.@results_database_schema.@sexdiff_cohort_ttonset_v5 -- results.sexdiff_cohort_ttonset_v5 -- #sexdiff_cohort_ttonset
+INTO @results_database_schema.@sexdiff_cohort_ttonset_v5 -- results.sexdiff_cohort_ttonset_v5 -- #sexdiff_cohort_ttonset
 from (select
     h1.person_id
   , h2.cohort_start_date
@@ -284,8 +284,8 @@ from (select
     , m.condition_concept_id
     , n.concept_name
     , min(m.condition_start_date) as condition_start_date
-  from dbo.condition_occurrence as m
-    inner join dbo.concept as n
+  from @cdm_database.condition_occurrence as m
+    inner join @cdm_database.concept as n
     on m.condition_concept_id=n.concept_id
   where m.condition_concept_id != '0'
   group by m.person_id, m.condition_concept_id, n.concept_name
@@ -295,9 +295,9 @@ from (select
     where DATEDIFF(day, h1.condition_start_date, h2.cohort_start_date) between 0 and 1095) as a
   inner join #sexdiff_cohort_ref as h3 ---FIX
     on a.cohort_definition_id=h3.cohort_definition_id
-  inner join dbo.concept as h4
+  inner join @cdm_database.concept as h4
     on a.condition_concept_id=h4.concept_id
-  inner join dbo.person as h5
+  inner join @cdm_database.person as h5
       on a.person_id = h5.person_id
     where h5.gender_concept_id in ('8532','8507')
     -- 8532 female
@@ -309,7 +309,7 @@ select @source_name as source_name
     , b.avg_time_onset_males
     , b.std_time_onset_males
     , a.num_females + b.num_males as num_persons
-into @cdm_database.@results_database_schema.@sexdiff_cohort_ttonset_summary_v5-- results.sexdiff_cohort_ttonset_summary_v5 -- #sexdiff_cohort_ttonset_summary
+into @results_database_schema.@sexdiff_cohort_ttonset_summary_v5-- results.sexdiff_cohort_ttonset_summary_v5 -- #sexdiff_cohort_ttonset_summary
 from (select  cohort_definition_id
     , cohort_definition_name
     , condition_concept_id as concept_id
@@ -317,7 +317,7 @@ from (select  cohort_definition_id
     , count(gender_concept_id) as num_females
     , avg(time_to_onset)/365.25 as avg_time_onset_females
     , stdev(time_to_onset)/365.25 as std_time_onset_females
-from @cdm_database.@results_database_schema.@sexdiff_cohort_ttonset_v5-- results.sexdiff_cohort_ttonset_v5 -- #sexdiff_cohort_ttonset
+from @results_database_schema.@sexdiff_cohort_ttonset_v5-- results.sexdiff_cohort_ttonset_v5 -- #sexdiff_cohort_ttonset
 where gender_concept_id = '8532'
 group by cohort_definition_id, cohort_definition_name, condition_concept_id, concept_name) as a
 inner join
@@ -328,7 +328,7 @@ inner join
     , count(gender_concept_id) as num_males
     , avg(time_to_onset)/365.25 as avg_time_onset_males
     , stdev(time_to_onset)/365.25 as std_time_onset_males
-from @cdm_database.@results_database_schema.@sexdiff_cohort_ttonset_v5-- results.sexdiff_cohort_ttonset_v5 -- #sexdiff_cohort_ttonset
+from @results_database_schema.@sexdiff_cohort_ttonset_v5-- results.sexdiff_cohort_ttonset_v5 -- #sexdiff_cohort_ttonset
 where gender_concept_id = '8507'
 group by cohort_definition_id, cohort_definition_name, condition_concept_id, concept_name) as b
 on a.cohort_definition_id = b.cohort_definition_id
