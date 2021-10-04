@@ -72,7 +72,7 @@ cohortsToCreate <- readr::read_csv(pathToCsv, col_types = readr::cols())
 
 # Delete table if it already exists, perhaps from a partial execution of the script.
 # Commented out, because new users likely won't already have this table.
-sql = paste0('drop table ', cohortDatabaseSchema, '.', cohortTable, ';')
+# sql = paste0('drop table ', cohortDatabaseSchema, '.', cohortTable, ';')
 
 # sql_part2 = paste(sql_part1, DB, sep='')
 # sql_part3 = paste(sql_part2, ".results.", sep = '')
@@ -124,6 +124,10 @@ for (i in 1:nrow(cohortsToCreate)) {
 # Change the below line to reflect where results can be saved. I'm assuming you're saving to cohortDatabaseSchema
 results_database_schema = cohortDatabaseSchema # e.g. scratch_jhardi10
 results_sex_diff_summary = 'sex_diff_summary'
+
+# Drop table if it already exists from prior execution
+sql <- paste0('drop table ', results_database_schema, '.', results_sex_diff_summary)
+DatabaseConnector::executeSql(conn, sql)
 
 # Creating table with @params failing, so just create table directly in R
 sql <- paste0('create table ', results_database_schema, '.', results_sex_diff_summary, '(

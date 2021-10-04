@@ -12,7 +12,7 @@
 --concept-level summary
 -- concept, prevalence, % female, age, age for female, age difference
 --insert into @cdm_database.@results_database_schema.@results_sex_diff_summary (source_name, concept_id, concept_name, num_persons, prev_overall, num_female, prev_female,
-insert into @results_database_schema.@results_sex_diff_summary (source_name, concept_id, concept_name, num_persons, prev_overall, num_female, prev_female,
+insert into @results_database_schema.sex_diff_summary (source_name, concept_id, concept_name, num_persons, prev_overall, num_female, prev_female,
 
                                    num_male, prev_male, rr_female, pct_female, avg_age, avg_age_female, avg_age_male, avg_age_diff,
                                    std_dev_age, std_dev_age_female, std_dev_age_male, min_age, min_age_female, min_age_male,

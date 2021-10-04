@@ -92,7 +92,7 @@ results_database_schema = 'results' # e.g. scratch_jhardi10
 results_sex_diff_summary = 'sex_diff_summary'
 
 # Creating table with @params failing, so just create table directly in R
-sql <- paste0('create table ', results_database_schema, '.', results_sex_diff_summary, '(
+sql <- paste0('create table ', results_database_schema, '.sex_diff_summary', '(
       source_name varchar(255),
       concept_id bigint,
       concept_name varchar(255),
