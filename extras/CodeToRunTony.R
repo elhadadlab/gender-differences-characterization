@@ -87,7 +87,39 @@ for (i in 1:nrow(cohortsToCreate)) {
   DatabaseConnector::executeSql(conn, sql) #}
 }
 
-results_database_schema = "results"
+# Change the below line to reflect where results can be saved. I'm assuming you're saving to cohortDatabaseSchema
+results_database_schema = 'results' # e.g. scratch_jhardi10
+results_sex_diff_summary = 'sex_diff_summary'
+
+# Creating table with @params failing, so just create table directly in R
+sql <- paste0('create table ', results_database_schema, '.', results_sex_diff_summary, '(
+      source_name varchar(255),
+      concept_id bigint,
+      concept_name varchar(255),
+      num_persons bigint,
+      prev_overall float,
+      num_female bigint,
+      prev_female float,
+      num_male bigint,
+      prev_male float,
+      rr_female float,
+      pct_female float,
+      avg_age float,
+      avg_age_female float,
+      avg_age_male float,
+      avg_age_diff float,
+      std_dev_age float,
+      std_dev_age_female float,
+      std_dev_age_male float,
+      min_age float,
+      min_age_female float,
+      min_age_male float,
+      max_age float,
+      max_age_female float,
+      max_age_male float
+) ;')
+
+DatabaseConnector::executeSql(conn, sql)
 
 # Run processing for all_condition_occurrence_summary.sql script
 sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "all_condition_occurrence_summary.sql",
