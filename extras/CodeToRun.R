@@ -78,15 +78,15 @@ cohortsToCreate <- readr::read_csv(pathToCsv, col_types = readr::cols())
 # sql_part3 = paste(sql_part2, ".results.", sep = '')
 # sql       = paste(sql_part3, cohortTable, sep = '')
 
- DatabaseConnector::executeSql(
-  connection = conn,
-  sql = sql,
-  profile = FALSE,
-  progressBar = TRUE,
-  reportOverallTime = TRUE,
-  errorReportFile = file.path(getwd(), "errorReportSql.txt"),
-  runAsBatch = FALSE
-)
+#  DatabaseConnector::executeSql(
+#   connection = conn,
+#   sql = sql,
+#   profile = FALSE,
+#   progressBar = TRUE,
+#   reportOverallTime = TRUE,
+#   errorReportFile = file.path(getwd(), "errorReportSql.txt"),
+#   runAsBatch = FALSE
+# )
 
 sql <- paste0('create table ', cohortDatabaseSchema, '.', cohortTable, '(
     cohort_definition_id bigint,
