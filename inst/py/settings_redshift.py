@@ -9,7 +9,7 @@ lines = file1.readlines()
 # [Add the Python subdirectory]
 import os
 import sys
-PATH = 'C:\\Users\\tonys\\Documents\\Research\\characterizationPaperPackage\\inst\\py\\'
+PATH = 'C:\\Users\\admin_jhardi10\\Documents\\characterizationPaperPackage\\inst\\py'
 # curr_path = os.getcwd() + '\\inst\\py\\'
 sys.path.append(PATH)
 

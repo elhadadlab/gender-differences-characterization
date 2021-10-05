@@ -146,6 +146,10 @@ sql <- "CREATE TABLE scratch_jhardi10.results_sex_diff_summary \r\n (source_name
 sql <- "DROP TABLE scratch_jhardi10.results_sex_diff_summary"
 DatabaseConnector::executeSql(conn, sql)
 
+# Save table FP to file, so it can be parsed in Python.
+tablepaths <- c(cohortDatabaseSchema, cohortTable)
+write.table(tablepaths, 'tablepaths.txt', sep = ",", row.names=FALSE, col.names=FALSE)
+
 # Begin Python processing and output generation
 # settings.py changes the os working directory [to allow relative paths]
 
@@ -154,11 +158,19 @@ use_python(PYTHON_PATH) # Python interpreter specified in parameters
 # If it does throw the rpytools error, it's just a runtime error that doesn't actually
 # Inhibit the scripts.
 sys <- import("sys", convert = TRUE) # Fixes run-time warning and error?
-py_run_file('inst/py/settings.py')
-py_run_file('creating_summaries.py')
-py_run_file('tfidf_vectorizer.py')
-py_run_file('generating_prevalence_graphs.py')
-py_run_file('diagnostic_delay.py') 
+if (attr(conn, "dbms") == "sql server") {
+  py_run_file('inst/py/settings_sqlserver.py')
+  py_run_file('creating_summaries_sqlserver.py')
+  py_run_file('tfidf_vectorizer_sqlserver.py')
+  py_run_file('generating_prevalence_graphs_sqlserver.py')
+  py_run_file('diagnostic_delay_sqlserver.py') 
+} else if (attr(conn, "dbms") == "redshift") {
+  py_run_file('inst/py/settings_redshift.py')  
+  py_run_file('creating_summaries_redshift.py')
+  py_run_file('tfidf_vectorizer_redshift.py')
+  py_run_file('generating_prevalence_graphs_redshift.py')
+  py_run_file('diagnostic_delay_redshift.py') 
+}
 
 disconnect(connection = conn)
 
