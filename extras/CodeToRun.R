@@ -185,7 +185,9 @@ sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "sexdiff_cohort_reference
 
 DatabaseConnector::executeSql(conn, sql)
 
-
+# Save table FP to file, so it can be parsed in Python.
+tablepaths <- c(results_database_schema, cohortTable)
+write.table(tablepaths, 'tablepaths.txt', sep = ",", row.names=FALSE, col.names=FALSE)
 
 # Begin Python processing and output generation
 # settings.py changes the os working directory [to allow relative paths]
