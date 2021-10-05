@@ -9,7 +9,7 @@
 --DROP TABLE #sexdiff_cohort_ref
 --END
 
-drop table #sexdiff_cohort_ref;
+--drop table #sexdiff_cohort_ref;
 create table #sexdiff_cohort_ref
 (
   cohort_definition_id bigint,
@@ -70,7 +70,7 @@ insert into #sexdiff_cohort_ref (cohort_definition_id, cohort_definition_name) v
 insert into #sexdiff_cohort_ref (cohort_definition_id, cohort_definition_name) values (11161, '[PL 313459001] Sleep apnea referent concept incident cohort: First occurrence of referent concept + descendants with >=1095d prior observation');
 insert into #sexdiff_cohort_ref (cohort_definition_id, cohort_definition_name) values (11162, '[PL 313800003] Thrombotic microangiopathy events, based on diagnosis codes from Reynolds AJKD 2003 and Perkins NDT 2006');
 insert into #sexdiff_cohort_ref (cohort_definition_id, cohort_definition_name) values (11163, '[PL 314381003] Multi-system inflammatory syndrome (Kawasaki disease or toxic shock syndrome) episodes, defined by condition occurrences of Toxic shock syndrome or kawasaki disease conceptset');
-insert into #sexdiff_cohort_ref (cohort_definition_id, cohort_definition_name) values (11164, '[PL 314383003] Myocarditis by Sundbøll, First diagnosis of custom codes from Sundbøll, during inpatient or outpatient');
+insert into #sexdiff_cohort_ref (cohort_definition_id, cohort_definition_name) values (11164, '[PL 314383003] Myocarditis by Sundb?ll, First diagnosis of custom codes from Sundb?ll, during inpatient or outpatient');
 insert into #sexdiff_cohort_ref (cohort_definition_id, cohort_definition_name) values (11165, '[PL 316139001] Heart failure referent concept incident cohort: First occurrence of referent concept + descendants with >=1095d prior observation');
 insert into #sexdiff_cohort_ref (cohort_definition_id, cohort_definition_name) values (11166, '[PL 316866003] Hypertensive disorder prevalent cohort:  First condition occurrence of Hypertension conceptset');
 insert into #sexdiff_cohort_ref (cohort_definition_id, cohort_definition_name) values (11167, '[PL 317009003] Hospitalization for Asthma, defined by inpatient visit with a primary condition occurrence of asthma conceptset');
@@ -153,8 +153,8 @@ insert into #sexdiff_cohort_ref (cohort_definition_id, cohort_definition_name) v
 -- differences in Microsoft SQL server 2017 vs PostGreSQL
 SELECT c1.COHORT_DEFINITION_ID, c1.SUBJECT_ID, c1.cohort_start_date, c1.cohort_end_date
 INTO #sexdiff_cohort
-FROM @results_database_schema.@target_cohort_table c1 -- FROM @cdm_database.results.cohort_characterization c1 -- created in the R script!
-INNER JOIN #sexdiff_cohort_ref cr1 on c1.COHORT_DEFINITION_ID = cr1.cohort_definition_id
+FROM @results_database_schema.@target_cohort_table c1 
+INNER JOIN #sexdiff_cohort_ref cr1 on c1.COHORT_DEFINITION_ID = cr1.cohort_definition_id;
 
 -- select * from #sexdiff_cohort
 
@@ -211,7 +211,7 @@ FROM
       (
       select sc1.cohort_definition_id, p1.person_id, p1.gender_concept_id, year(cohort_start_date) - p1.year_of_birth as age, sc1.cohort_start_date
         from #sexdiff_cohort sc1
-          inner join person p1
+          inner join @cdm_database.person p1
           on sc1.subject_id = p1.person_id
       ) t1
     inner join @cdm_database.condition_occurrence co1
@@ -242,8 +242,8 @@ FROM
 
 inner join #sexdiff_cohort_ref cr1
   on t3.cohort_definition_id = cr1.cohort_definition_id
-inner join concept c1
-  on t3.condition_concept_id = c1.concept_id
+inner join @cdm_database.concept c1
+  on t3.condition_concept_id = c1.concept_id;
 
 -- save this output for visuals for prevalence [or, access using Python]
 -- select * from results.sexdiff_cohort_covarate_summary_v5 where cohort_definition_id = 11117 --#sexdiff_cohort_covarate_summary
@@ -299,7 +299,7 @@ from (select
     on a.condition_concept_id=h4.concept_id
   inner join @cdm_database.person as h5
       on a.person_id = h5.person_id
-    where h5.gender_concept_id in ('8532','8507')
+    where h5.gender_concept_id in ('8532','8507');
     -- 8532 female
     -- 8507 male
 -- drop table results.sexdiff_cohort_ttonset_summary_v5 -- #sexdiff_cohort_ttonset_summary;
@@ -332,4 +332,4 @@ from @results_database_schema.@sexdiff_cohort_ttonset_v5-- results.sexdiff_cohor
 where gender_concept_id = '8507'
 group by cohort_definition_id, cohort_definition_name, condition_concept_id, concept_name) as b
 on a.cohort_definition_id = b.cohort_definition_id
-   and a.concept_id = b.concept_id
+   and a.concept_id = b.concept_id;

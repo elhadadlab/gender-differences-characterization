@@ -126,7 +126,10 @@ sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "all_condition_occurrence
                                          packageName = "characterizationPaperPackage",
                                          dbms = attr(conn, "dbms"),
                                          cdm_database = cdmDatabaseSchema,  # This will need to change to your DB name
-                                         source_name = paste0(cdmDatabaseSchema, collapse = "'")) # Note the additional ''s.
+                                         source_name = paste0("'",cdmDatabaseSchema,"'"),
+                                         results_database_schema = cohortDatabaseSchema) # Note the additional ''s.
+
+
 
 
 DatabaseConnector::executeSql(conn, sql)
@@ -136,9 +139,11 @@ DatabaseConnector::executeSql(conn, sql)
 sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "sexdiff_cohort_reference_ver5.sql",
                                          packageName = "characterizationPaperPackage",
                                          dbms = attr(conn, "dbms"),
-                                         cdm_database = "ohdsi_cumc_2021q1r2",
-                                         source_name = "'ohdsi_cumc_2021q1r2'")
+                                         cdm_database = cdmDatabaseSchema,
+                                         source_name = paste0("'", cdmDatabaseSchema, "'"))
 
+sql <- "CREATE TABLE scratch_jhardi10.results_sex_diff_summary \r\n (source_name varchar(255),\r\n      concept_id bigint,\r\n      concept_name varchar(255),\r\n      num_persons bigint,\r\n      prev_overall float,\r\n      num_female bigint,\r\n      prev_female float,\r\n      num_male bigint,\r\n      prev_male float,\r\n      rr_female float,\r\n      pct_female float,\r\n      avg_age float,\r\n      avg_age_female float,\r\n      avg_age_male float,\r\n      avg_age_diff float,\r\n      std_dev_age float,\r\n      std_dev_age_female float,\r\n      std_dev_age_male float,\r\n      min_age float,\r\n      min_age_female float,\r\n      min_age_male float,\r\n      max_age float,\r\n      max_age_female float,\r\n      max_age_male float\r\n)\nDISTSTYLE ALL;"
+sql <- "DROP TABLE scratch_jhardi10.results_sex_diff_summary"
 DatabaseConnector::executeSql(conn, sql)
 
 # Begin Python processing and output generation
