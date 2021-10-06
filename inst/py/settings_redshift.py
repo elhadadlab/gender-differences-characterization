@@ -26,6 +26,6 @@ port = credentials.port.values[0] # e.g. 5439
 
 # Change the 'results' string to wherever the table was saved
 sexdiff_cohort_ttonset_v5_tablepath = 'scratch_jhardi10' + '.sexdiff_cohort_ttonset_v5'
-sex_diff_summary_tablepath = 'scratch_jhardi10' + '.results_sex_diff_summary'
+sex_diff_summary_tablepath = 'scratch_jhardi10' + '.sex_diff_summary'
 
 # print(server, db, user, password)
