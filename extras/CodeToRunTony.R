@@ -161,7 +161,7 @@ use_python(PYTHON_PATH) # Python interpreter specified in parameters
 sys <- import("sys", convert = TRUE) # Fixes run-time warning and error?
 sys <- import("sys", convert = TRUE) # Fixes run-time warning and error?
 
-# py_run_file('testing_imports.py')
+py_run_file('inst/py/testing_imports.py')
 
 if (attr(conn, "dbms") == "sql server") {
   py_run_file('inst/py/settings_sqlserver.py')
