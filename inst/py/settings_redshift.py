@@ -18,11 +18,11 @@ print('Current path: ', PATH)
 # Parameters
 import pandas as pd
 credentials = pd.read_csv('D:\\Git\\characterizationPaperPackage\\empty_credentials.csv')
-server = credentials.server.values[0] # e.g. ohda-prod-1.cldcoxyrkflo.us-east-1.redshift.amazonaws.com
-db = credentials.db.values[0] # e.g. truven-ccae
-user = credentials.user.values[0]
-password = credentials.password.values[0]
-port = credentials.port.values[0] # e.g. 5439
+server = str(credentials.server.values[0]) # e.g. ohda-prod-1.cldcoxyrkflo.us-east-1.redshift.amazonaws.com
+db = str(credentials.db.values[0]) # e.g. truven-ccae
+user = str(credentials.user.values[0])
+password = str(credentials.password.values[0])
+port = str(credentials.port.values[0]) # e.g. 5439
 
 # Change the 'results' string to wherever the table was saved
 sexdiff_cohort_ttonset_v5_tablepath = 'scratch_jhardi10' + '.sexdiff_cohort_ttonset_v5'
