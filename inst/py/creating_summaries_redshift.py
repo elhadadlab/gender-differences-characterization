@@ -6,6 +6,7 @@ from tqdm import tqdm
 import glob
 import sys
 import os
+from time import time
 
 from settings_redshift import *
 
@@ -26,7 +27,7 @@ for cohort_file_id in tqdm(cohort_files.cohortId):
     if os.path.exists('../../output/summaries/' + db + '/' + str(cohort_file_id) + '_summary.csv'):
         continue;
 
-    sql_query_string = 'select * from ' + sexdiff_cohort_ttonset_v5_tablepath + ' where cohort_definition_id = ' # db.results.sexdiff_cohort_ttonset_v5'
+    sql_query_string = 'select person_id, gender_concept_id, condition_concept_id, concept_name, time_to_onset from ' + sexdiff_cohort_ttonset_v5_tablepath + ' where cohort_definition_id = ' # db.results.sexdiff_cohort_ttonset_v5'
     df = pandas.io.sql.read_sql(sql_query_string + str(cohort_file_id), conn)
     # print(cohort_file_id, len(df))
 
@@ -90,6 +91,6 @@ for cohort_file_id in tqdm(cohort_files.cohortId):
     data_dict['std_TTD_males_days'] = std_TTD_males
 
     summary = pd.DataFrame.from_dict(data_dict)
-    summary.to_csv('../../output/summaries/' + db + '/' + str(cohort_id[0]) + '_summary.csv', index = False)
+    summary.to_csv('../../output/summaries/' + db + '/' + str(cohort_file_id) + '_summary.csv', index = False)
 
 conn.close()
