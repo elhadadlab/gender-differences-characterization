@@ -4,7 +4,7 @@ import glob
 import sys
 import os
 
-from settings_sqlserver import *
+from settings_redshift import *
 
 print('Moving old summaries...')
 # Create the connection
