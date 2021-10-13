@@ -2,16 +2,91 @@ DBMS:
 sql server
 
 Error:
-com.microsoft.sqlserver.jdbc.SQLServerException: There is already an object named '#sexdiff_cohort_ref' in the database.
+com.microsoft.sqlserver.jdbc.SQLServerException: There is already an object named 'sexdiff_cohort_covarate_summary_v6' in the database.
 
 SQL:
-create table #sexdiff_cohort_ref
-(
-  cohort_definition_id bigint,
-  cohort_definition_lookback_days bigint,
-  cohort_definition_name varchar(255)
+SELECT 'ohdsi_cumc_2021q1r2' as source_name, -- change to your DB name
+       cr1.cohort_definition_id as cohort_definition_id,
+       cr1.cohort_definition_name as cohort_definition_name,
+       c1.concept_id as concept_id,
+       c1.concept_name as concept_name,
+       t3.num_persons_w_covariate as num_persons_w_covariate,
+       t3.num_persons_total as num_persons_total,
+       t3.pct_persons_w_covariate as pct_persons_w_covariate,
+       t3.num_females as num_females,
+       t3.num_males as num_males,
+       t3.pct_females as pct_females,
+       t3.prev_females as prev_females,
+       t3.prev_males as prev_males,
+       case when t3.prev_males > 0 then 1.0 * t3.prev_females / t3.prev_males else 0 end as rr_female --,
+       --t3.avg_age as avg_age,
+       --t3.avg_age_male as avg_age_male,
+       --t3.avg_age_female as avg_age_female,
+       --t3.avg_age_diff as avg_age_diff
+INTO ohdsi_cumc_2021q1r2.results.sexdiff_cohort_covarate_summary_v6 --results.sexdiff_cohort_covarate_summary_v5 -- #sexdiff_cohort_covarate_summary
+FROM
+  (
+  select t2.cohort_definition_id,
+    t2.condition_concept_id,
+    sum(t2.num_persons) as num_persons_w_covariate,
+    sum(n1.num_persons) as num_persons_total,
+    1.0*sum(t2.num_persons)/sum(n1.num_persons) pct_persons_w_covariate,
+    max(case when t2.gender_concept_id = 8532 then t2.num_persons else 0 end) as num_females,
+    max(case when t2.gender_concept_id = 8507 then t2.num_persons else 0 end) as num_males,
+    1.0*max(case when t2.gender_concept_id = 8532 then t2.num_persons else 0 end)/sum(t2.num_persons) as pct_females,
+    case when max(case when t2.gender_concept_id = 8532 then n1.num_persons else 0 end) > 0 then 100.0*max(case when t2.gender_concept_id = 8532 then t2.num_persons else 0 end)/max(case when t2.gender_concept_id = 8532 then n1.num_persons else 0 end) else 0 end as prev_females,
+    case when max(case when t2.gender_concept_id = 8507 then n1.num_persons else 0 end) > 0 then  100.0*max(case when t2.gender_concept_id = 8507 then t2.num_persons else 0 end)/max(case when t2.gender_concept_id = 8507 then n1.num_persons else 0 end) else 0 end as prev_males--,
+    --avg(1.0*t2.age) as avg_age,
+    --avg(case when t2.gender_concept_id = 8532 then 1.0*age else null end) as avg_age_female,
+    --avg(case when t2.gender_concept_id = 8507 then 1.0*age else null end) as avg_age_male,
+    --avg(case when t2.gender_concept_id = 8532 then 1.0*age else null end) - avg(case when t2.gender_concept_id = 8507 then 1.0*age else null end) as avg_age_diff
+  from
+    (
+    select
+      t1.cohort_definition_id,
+      t1.gender_concept_id,
+      co1.condition_concept_id,
+      count(distinct t1.person_id) as num_persons--,
+      --t1.age
+    from
+      (
+      select sc1.cohort_definition_id, p1.person_id, p1.gender_concept_id, year(cohort_start_date) - p1.year_of_birth as age, sc1.cohort_start_date, cr1.cohort_definition_lookback_days
+        from #sexdiff_cohort sc1
+          inner join ohdsi_cumc_2021q1r2.dbo.person p1
+          on sc1.subject_id = p1.person_id
+		  inner join #sexdiff_cohort_ref cr1
+		  on sc1.cohort_definition_id = cr1.cohort_definition_id
+      ) t1
+    inner join ohdsi_cumc_2021q1r2.dbo.condition_occurrence co1
+    on t1.person_id = co1.person_id
+    and co1.condition_start_date >= dateadd(dd,-(t1.cohort_definition_lookback_days),t1.cohort_start_date)
+    and co1.condition_start_Date < t1.cohort_start_date
+    group by t1.cohort_definition_id,
+      t1.gender_concept_id,
+      co1.condition_concept_id--,
+    --  t1.age
+    ) t2
+  inner join
+    (
+      select sc1.cohort_definition_id,
+        gender_concept_id,
+        count(person_id) as num_persons
+      from #sexdiff_cohort sc1
+      inner join ohdsi_cumc_2021q1r2.dbo.person p1
+      on sc1.subject_id = p1.person_id
+      group by sc1.cohort_definition_id,
+        gender_concept_id
+    ) n1
+  on t2.cohort_definition_id = n1.cohort_definition_id
+  and t2.gender_concept_id = n1.gender_concept_id
+  group by t2.cohort_definition_id,
+    t2.condition_concept_id
+  ) t3
 
-)
+inner join #sexdiff_cohort_ref cr1
+  on t3.cohort_definition_id = cr1.cohort_definition_id
+inner join ohdsi_cumc_2021q1r2.dbo.concept c1
+  on t3.condition_concept_id = c1.concept_id
 
 R version:
 R version 4.0.3 (2020-10-10)
