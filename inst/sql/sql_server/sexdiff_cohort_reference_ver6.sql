@@ -298,7 +298,7 @@ from (select
     on h1.person_id=h2.subject_id
     where DATEDIFF(day, h1.condition_start_date, h2.cohort_start_date) between 0 and h2.cohort_definition_lookback_days) as a
   inner join #sexdiff_cohort_ref as h3 ---FIX
-    --on a.cohort_definition_id=h3.cohort_definition_id
+    on a.cohort_definition_id=h3.cohort_definition_id
   inner join @cdm_database.concept as h4
     on a.condition_concept_id=h4.concept_id
   inner join @cdm_database.person as h5
