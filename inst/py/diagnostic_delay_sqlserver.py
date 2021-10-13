@@ -7,6 +7,7 @@ import pickle
 import numpy as np
 import glob
 import sys
+from time import time
 
 from settings_sqlserver import *
 
@@ -32,9 +33,8 @@ with open('../csv/exclude_concepts_all_final.csv', 'r') as handle:
     excluded = handle.readlines()
 
 for summary_file in tqdm.tqdm(glob.glob(summary_fp + '*')):
+    a = time()
     cohort_file_id = summary_file.split('\\')[-1].split('_')[0]
-    sql_query_string = 'select * from ' + sexdiff_cohort_ttonset_v5_tablepath + ' where cohort_definition_id = '
-    df = pandas.io.sql.read_sql(sql_query_string + str(cohort_file_id), conn)
     cohort_id = str(cohort_file_id)
 
     tmp = []
@@ -58,8 +58,15 @@ for summary_file in tqdm.tqdm(glob.glob(summary_fp + '*')):
         if len(valid_top_N) == 50:
             break;
 
+    sql_query_string = 'select person_id, gender_concept_id, condition_concept_id, concept_name, time_to_onset from ' + sexdiff_cohort_ttonset_v5_tablepath + ' where cohort_definition_id = ' + str(cohort_file_id) # db.results.sexdiff_cohort_ttonset_v5
+    conds = ', '.join([str(x) for x in valid_top_N])
+    sql_query_string = sql_query_string + ' and condition_concept_id in (' + conds + ');'
+    subset_df = pandas.io.sql.read_sql(sql_query_string, conn)
+    print('Elapsed time for query:')
+    print(time() - a)
+
     # Get the subset of the DF with only these top 50 symptoms
-    subset_df = df[df.condition_concept_id.isin(valid_top_N)]
+    # subset_df = df[df.condition_concept_id.isin(valid_top_N)]
 
     women_df = subset_df[subset_df.gender_concept_id == 8532]
     men_df   = subset_df[subset_df.gender_concept_id == 8507]

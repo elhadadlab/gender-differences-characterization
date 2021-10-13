@@ -24,7 +24,7 @@ user = credentials.user.values[0]
 password = credentials.password.values[0]
 
 # Change the 'results' string to wherever the table was saved
-sexdiff_cohort_ttonset_v5_tablepath = db + '.' + 'results' + '.sexdiff_cohort_ttonset_v5'
+sexdiff_cohort_ttonset_v5_tablepath = db + '.' + 'results' + '.sexdiff_cohort_ttonset_v6'
 sex_diff_summary_tablepath = db + '.' + 'results' + '.sex_diff_summary'
 
 # print(server, db, user, password)

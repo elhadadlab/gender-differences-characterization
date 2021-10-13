@@ -134,16 +134,16 @@ DatabaseConnector::executeSql(conn, sql)
 
 
 # Run processing sexdiff_cohort_reference_ver5.sql script
-sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "sexdiff_cohort_reference_ver5.sql",
+sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "sexdiff_cohort_reference_ver6.sql",
                                          packageName = "characterizationPaperPackage",
                                          dbms = attr(conn, "dbms"),
-                                         cdm_database = "ohdsi_cumc_2021q1r2",
+                                         cdm_database = "ohdsi_cumc_2021q1r2.dbo",
                                          source_name = "'ohdsi_cumc_2021q1r2'",
-                                         results_database_schema = results_database_schema,
+                                         results_database_schema = cohortDatabaseSchema,
                                          target_cohort_table = cohortTable,
-                                         sexdiff_cohort_covarate_summary_v5 = "sexdiff_cohort_covarate_summary_v5",
-                                         sexdiff_cohort_ttonset_v5 = "sexdiff_cohort_ttonset_v5",
-                                         sexdiff_cohort_ttonset_summary_v5 = "sexdiff_cohort_ttonset_summary_v5")
+                                         sexdiff_cohort_covarate_summary_v5 = "sexdiff_cohort_covarate_summary_v6",
+                                         sexdiff_cohort_ttonset_v5 = "sexdiff_cohort_ttonset_v6",
+                                         sexdiff_cohort_ttonset_summary_v5 = "sexdiff_cohort_ttonset_summary_v6")
 
 DatabaseConnector::executeSql(conn, sql)
 

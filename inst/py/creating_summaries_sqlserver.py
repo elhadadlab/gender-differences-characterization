@@ -6,6 +6,7 @@ from tqdm import tqdm
 import glob
 import sys
 import os
+from time import time
 
 from settings_sqlserver import *
 
@@ -26,8 +27,12 @@ for cohort_file_id in tqdm(cohort_files.cohortId):
     if os.path.exists('../../output/summaries/' + db + '/' + str(cohort_file_id) + '_summary.csv'):
         continue;
 
-    sql_query_string = 'select * from ' + sexdiff_cohort_ttonset_v5_tablepath + ' where cohort_definition_id = '
+    print('Loading file...')
+    a = time()
+    sql_query_string = 'select person_id, gender_concept_id, condition_concept_id, concept_name, time_to_onset from ' + sexdiff_cohort_ttonset_v5_tablepath + ' where cohort_definition_id = '
     df = pandas.io.sql.read_sql(sql_query_string + str(cohort_file_id), conn)
+    print('Time elapsed:')
+    print(time() - a)
     # print(cohort_file_id, len(df))
 
     if len(df) == 0:
