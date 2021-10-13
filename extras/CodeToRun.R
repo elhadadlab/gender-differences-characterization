@@ -171,12 +171,11 @@ sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "all_condition_occurrence
 
 DatabaseConnector::executeSql(conn, sql)
 
-# Run processing sexdiff_cohort_reference_ver5.sql script
 sql <- SqlRender::loadRenderTranslateSql(sqlFilename = "sexdiff_cohort_reference_ver6.sql",
                                          packageName = "characterizationPaperPackage",
                                          dbms = attr(conn, "dbms"),
-                                         cdm_database = "truven_ccae",
-                                         source_name = "'truven_ccae'",
+                                         cdm_database = cdmDatabaseSchema, #not ‘truven_ccae’
+                                         source_name = paste0("'", cdmDatabaseSchema, "'"),  #not ‘truven_ccae’
                                          results_database_schema = results_database_schema,
                                          target_cohort_table = cohortTable,
                                          sexdiff_cohort_covarate_summary_v5 = "sexdiff_cohort_covarate_summary_v6",
