@@ -1,1 +1,0 @@
-<this is to allow GitHub to show the folder, despite the contents being .gitignore'd>
